@@ -13,3 +13,9 @@ DATABASES = {
         },
     }
 }
+
+REDIS_SETTINGS = {
+    'default': {
+        'key': 'watch_files'
+    }
+}

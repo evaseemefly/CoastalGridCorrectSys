@@ -10,6 +10,7 @@ from util.enum import IssureEnum, ForecastTypeEnum, ProductTypeEunm, ForecastAre
     RevisalTypeEnum, LevelEnum
 from model.models import BaseFileInfoModel
 from db.db import DbFactory
+from cache.connect import get_cache_conn, get_lpop
 
 
 class FileBase:
@@ -243,11 +244,24 @@ class WatchFileTask(ITask):
     def to_do(self, *args, **kwargs):
         """
             对于监听文件进行标准化处理
+            1- 定时从 redis 中取出数组(指定长度)
+            2- 执行 to_store 操作
         @param args:
         @param kwargs:
         @return:
         """
 
+        pass
+
+    def get_catche_list(self, count: int):
+        """
+            从缓存中获取指定集合
+            TODO:[-] 22-08-10 此处存在的问题:每次执行时通过设置每次读取的长度，分批处理，还需要加入获取 list 长度再根据 count 进行分批读取
+        @param count: 从集合中读取的长度
+        @return:
+        """
+        pop_obj = get_lpop()
+        print(pop_obj)
         pass
 
     def to_store(self, **kwargs):

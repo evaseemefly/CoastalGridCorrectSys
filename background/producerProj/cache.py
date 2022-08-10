@@ -2,9 +2,14 @@
 import redis
 import datetime
 import json
+from settings import REDIS_SETTINGS
 
 redis_pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0)
 redis_conn = redis.Redis(connection_pool=redis_pool)
+
+#
+REDIS_KEY = REDIS_SETTINGS.get('default').get('key')
+
 
 # 测试添加 文件列表集合
 # test_file = {
@@ -25,7 +30,7 @@ def insert_to_redis(file_data: dict) -> bool:
     is_ok: bool = False
     try:
         json_data = json.dumps(file_data)
-        v = redis_conn.lpush('watch_files', json_data)
+        v = redis_conn.lpush(REDIS_KEY, json_data)
         is_ok = True
     except Exception as e:
         is_ok = False

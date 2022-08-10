@@ -8,6 +8,12 @@ WATCH_SETTINGS = {
     }
 }
 
+REDIS_SETTINGS = {
+    'default': {
+        'key': 'watch_files'
+    }
+}
+
 LOG_SETTINGS = {
     'default': {
         'LOGGING_PATH': r'D:\01Proj\CoastalGridCorrectSys\background\producerProj\logs\logs.txt'  # 日志的输出目录

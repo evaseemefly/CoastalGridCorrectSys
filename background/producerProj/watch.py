@@ -47,9 +47,11 @@ def event_to_store(event, event_type: str):
     @return:
     """
     logger.info(f'file {event_type} :{event.src_path} ')
+    # TODO:[-] 22-08-11 注意此处获取时间戳使用 arrow 获取
     file_data = {
         'full_path': f'{event.src_path}',
-        'gmt_created': datetime.datetime.utcnow().timestamp(),
+        # 'gmt_created': datetime.datetime.utcnow().timestamp(),
+        'gmt_created': arrow.get().timestamp(),
         'event_type': event_type
     }
     insert_to_redis(file_data)

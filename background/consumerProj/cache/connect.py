@@ -21,6 +21,9 @@ def get_lpop() -> dict:
     """
     conn = get_cache_conn()
     list_key = REDIS_SETTINGS.get('default').get('key')
+    # 若全部取完会为None
     json_temp: str = conn.lpop(list_key)
-    dict_temp: dict = loads(json_temp)
+    dict_temp: dict = None
+    if json_temp is not None:
+        dict_temp = loads(json_temp)
     return dict_temp

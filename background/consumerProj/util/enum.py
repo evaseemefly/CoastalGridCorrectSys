@@ -40,6 +40,7 @@ class ForecastElementEnum(Enum):
         预报要素
     """
     SSW = 5001
+    WAV = 5002
     NULL = 9999
 
 

@@ -1,9 +1,10 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from datetime import datetime
+from core.tasks import WatchFileTask
 
 
 def job():
-    print(datetime.utcnow())
+    WatchFileTask().to_do()
 
 
 def to_schedule():

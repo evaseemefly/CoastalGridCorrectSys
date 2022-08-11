@@ -3,7 +3,7 @@
 DATABASES = {
     'default': {
         'ENGINE': 'mysqldb',  # 数据库引擎
-        'NAME': 'typhoon_forecast_db',  # 数据库名
+        'NAME': 'grid_sys',  # 数据库名
         'USER': 'root',  # 账号
         'PASSWORD': '',
         'HOST': '127.0.0.1',  # HOST

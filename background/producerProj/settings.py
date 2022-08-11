@@ -4,7 +4,7 @@
 # watch_dog 监听配置
 WATCH_SETTINGS = {
     'default': {
-        'WATCH_ROOT_DIR': r'E:\01data\99test'  # 监听根目录
+        'WATCH_ROOT_DIR': r'D:\05data\05three_level_grid'  # 监听根目录
     }
 }
 
@@ -16,7 +16,7 @@ REDIS_SETTINGS = {
 
 LOG_SETTINGS = {
     'default': {
-        'LOGGING_PATH': r'D:\01Proj\CoastalGridCorrectSys\background\producerProj\logs\logs.txt'  # 日志的输出目录
+        'LOGGING_PATH': r'./logs/logs.txt'  # 日志的输出目录
     }
 }
 

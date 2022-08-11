@@ -30,7 +30,7 @@ class FileBase:
         """
         self.full_path = full_path
         self.update_dt = update_dt
-        self._path: pathlib = pathlib(full_path)
+        self._path: pathlib = pathlib.Path(full_path)
 
     @property
     def dir_path(self) -> str:
@@ -152,7 +152,8 @@ class FileBase:
         """
         val = self.file_name_splice[6]
         dicts = {
-            'SSW': ForecastElementEnum.SSW
+            'SSW': ForecastElementEnum.SSW,
+            'WAV': ForecastElementEnum.WAV
         }
         return dicts.get(val, ForecastElementEnum.NULL)
 
@@ -237,8 +238,8 @@ class ITask(metaclass=ABCMeta):
 
 
 class WatchFileTask(ITask):
-    def __init__(self, file: FileBase, **kwargs):
-        self.file = file
+    def __init__(self, **kwargs):
+        self.file: FileBase = None
         self.session = DbFactory().Session
 
     def to_do(self, *args, **kwargs):
@@ -250,8 +251,35 @@ class WatchFileTask(ITask):
         @param kwargs:
         @return:
         """
+        # self.get_catche_list()
+        watch_file = self.get_cache_file()
+        if watch_file is not None:
+            # {
+            # 'full_path': 'D:\\05data\\05three_level_grid\\NMF_BEN_OSM_CSDT_202208110800_120003_SSW_00_L0.nc',
+            # 'gmt_created': 1660156336.054919,
+            # 'event_type': 'modified'
+            # }
+            file_full_path: str = watch_file.get('full_path')
+            file_create_ts: float = float(watch_file.get('gmt_created'))
+            file_create_dt_utc: datetime.datetime = arrow.get(file_create_ts).datetime
 
+            file_info = FileBase(file_full_path, file_create_dt_utc)
+            if file_info is not None:
+                msg = f'now:{datetime.datetime.now()},当前处理文件:{file_info.file_name}'
+                self.to_store(file_info)
+            else:
+                msg = f'now:{datetime.datetime.now()},当前无需处理文件'
+            print(msg)
         pass
+
+    def get_cache_file(self) -> dict:
+        """
+            获取缓存中的 left top 监听文件
+        @return: 有可能为None
+        """
+        pop_obj = get_lpop()
+        # print(pop_obj)
+        return pop_obj
 
     def get_catche_list(self, count: int):
         """
@@ -260,11 +288,13 @@ class WatchFileTask(ITask):
         @param count: 从集合中读取的长度
         @return:
         """
-        pop_obj = get_lpop()
-        print(pop_obj)
+        # {'full_path': 'D:\\05data\\05three_level_grid\\NMF_BEN_OSM_CSDT_202208110800_120003_SSW_00_L0.nc',
+        # 'gmt_created': 1660156336.054919,
+        # 'event_type': 'modified'}
+
         pass
 
-    def to_store(self, **kwargs):
+    def to_store(self, file: FileBase, **kwargs):
         """
             step1: file -> model
             step2: 进行 to_stand -> bool -> model.is_standard
@@ -273,19 +303,19 @@ class WatchFileTask(ITask):
         @return:
         """
 
-        file_model = BaseFileInfoModel(issurer_id=self.file.stamp_issurer.value,
-                                       forecast_time=self.file.stamp_forecast_dt,
-                                       update_time=self.file.update_dt,
-                                       product_type=self.file.stamp_product_type.value,
-                                       forecast_area=self.file.stamp_forecast_area.value,
-                                       forecast_type=self.file.stamp_forecast_type.value,
-                                       forecast_period=self.file.stamp_period,
-                                       forecast_interval=self.file.stamp_interval,
-                                       forecast_element=self.file.stamp_forecast_element.value,
-                                       file_name=self.file.file_name,
-                                       file_ext=self.file.file_ext,
-                                       file_full_name=self.file.file_full_name,
-                                       path=self.file.dir_path,
+        file_model = BaseFileInfoModel(issurer_id=file.stamp_issurer.value,
+                                       forecast_time=file.stamp_forecast_dt.datetime,
+                                       update_time=file.update_dt,
+                                       product_type=file.stamp_product_type.value,
+                                       forecast_area=file.stamp_forecast_area.value,
+                                       forecast_type=file.stamp_forecast_type.value,
+                                       forecast_period=file.stamp_period,
+                                       forecast_interval=file.stamp_interval,
+                                       forecast_element=file.stamp_forecast_element.value,
+                                       file_name=file.file_name,
+                                       file_ext=file.file_ext,
+                                       file_full_name=file.file_full_name,
+                                       path=file.dir_path,
                                        is_standard=self.check_is_stand()
                                        )
         self.session.add(file_model)

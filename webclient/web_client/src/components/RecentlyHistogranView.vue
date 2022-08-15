@@ -18,10 +18,10 @@ export default class RecentlyHistogranView extends Vue {
 					text: '近7日数据量',
 				},
 				grid: {
-					left: '2%',
-					right: '2%',
-					top: '2%',
-					bottom: '2%',
+					left: '5%',
+					right: '5%',
+					top: '5%',
+					bottom: '15%',
 				},
 				tooltip: {},
 				xAxis: {
@@ -31,10 +31,11 @@ export default class RecentlyHistogranView extends Vue {
 				series: [
 					{
 						name: '数据量',
-						type: 'bar',
+						type: 'line',
 						data: [5, 20, 36, 10, 10, 20,21],
 					},
 				],
+				lineStyle: { color: '#f6b93b' },
 			})
 		}
 	}

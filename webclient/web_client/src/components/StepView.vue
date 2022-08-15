@@ -13,10 +13,22 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 @Component({})
 export default class StepView extends Vue {
 	mydata: any = null
-	
+
 	get computedTest() {
 		return null
 	}
 }
 </script>
-<style scoped></style>
+<style lang="less">
+.el-steps {
+	.el-step__title {
+		color: #a4acb4 !important;
+	}
+	.el-step__description.is-finish {
+		color: #fdfeff !important;
+	}
+	.el-step__icon {
+		background: #f5f705 !important;
+	}
+}
+</style>

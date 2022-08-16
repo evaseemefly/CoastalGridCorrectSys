@@ -37,7 +37,7 @@ export default class StatisticanInfoView extends Vue {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		font-size: 23px;
+		font-size: 40px;
 	}
 }
 </style>

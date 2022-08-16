@@ -3,12 +3,12 @@ import axios from 'axios'
 
 const HOST = ''
 
-const getTaskByGroup = (parm: { code: string; dt: Date }) => {
+const getTaskByGroup = (parm: { codes: string[]; dt: Date }) => {
 	const area = ''
 	const url = `${HOST}${area}/group/info`
 	return axios.get(url, {
 		// headers: authHeader(),
-		params: { group_code: parm.code, now_dt: parm.dt },
+		params: { group_codes: parm.codes, now_dt: parm.dt },
 	})
 }
 

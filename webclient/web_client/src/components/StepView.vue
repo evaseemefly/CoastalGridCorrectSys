@@ -33,6 +33,9 @@ export default class StepView extends Vue {
 	.el-step__description.is-finish {
 		color: #fdfeff !important;
 	}
+	.el-step__description.is-process {
+		color: #ffd640;
+	}
 	.el-step__icon {
 		background: #f5f705 !important;
 	}

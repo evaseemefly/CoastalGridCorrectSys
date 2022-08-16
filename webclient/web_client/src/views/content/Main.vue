@@ -3,26 +3,26 @@
 		<div class="my-row">
 			<div class="my-statics-form">
 				<StatisticanInfoView
-					minorTitle="测试标题1"
-					primayTile="测试主内容1"
+					:minorTitle="GroupStatisticalData.mimor"
+					:primayTile="GroupStatisticalData.primay"
 				></StatisticanInfoView>
 			</div>
 			<div class="my-statics-form">
 				<StatisticanInfoView
-					minorTitle="测试标题1"
-					primayTile="测试主内容1"
+					:minorTitle="ProductStatisticalData.mimor"
+					:primayTile="ProductStatisticalData.primay"
 				></StatisticanInfoView>
 			</div>
 			<div class="my-statics-form">
 				<StatisticanInfoView
-					minorTitle="测试标题1"
-					primayTile="测试主内容1"
+					:minorTitle="ProductTypeStatisticalData.mimor"
+					:primayTile="ProductTypeStatisticalData.primay"
 				></StatisticanInfoView>
 			</div>
 			<div class="my-statics-form">
 				<StatisticanInfoView
-					minorTitle="测试标题1"
-					primayTile="测试主内容1"
+					:minorTitle="DailyStatisticalData.mimor"
+					:primayTile="DailyStatisticalData.primay"
 				></StatisticanInfoView>
 			</div>
 			<!-- <div class="my-histogran">
@@ -53,6 +53,10 @@ import StatisticanInfoView from '@/components/StatisticaInfoView.vue'
 import { getTaskByGroup, getGroupCount } from '@/api'
 // enmu
 import { GroupEnum } from '@/enum'
+interface IInfo {
+	mimor: string
+	primay: string
+}
 @Component({
 	components: {
 		RecentlyHistogranView,
@@ -67,28 +71,83 @@ export default class MainView extends Vue {
 		name: string
 		stepList: { index: number; name: string; state: number }[]
 	}[] = []
-	groupStepList: { index: number; stepList: { title: string; desc: string }[] }[] = []
-	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = []
+	groupStepList: { index: number; stepList: { title: string; desc: string }[] }[] = [
+		{
+			index: 1,
+			stepList: [
+				{ title: '步骤1', desc: '国家级产生预报产品' },
+				{ title: '步骤2', desc: '融合海区预报产品' },
+				{ title: '步骤3', desc: '国家级订正产品' },
+			],
+		},
+		{
+			index: 1,
+			stepList: [
+				{ title: '步骤1', desc: '获取海区级预报产品并切分' },
+				{ title: '步骤2', desc: '产出省级预报产品' },
+			],
+		},
+	]
 
-	loadAllGroupTaskStep() {
+	// 对应四个统计form的统计对象
+	// 机构数量
+	GroupStatisticalData: IInfo = {
+		mimor: '机构数量',
+		primay: '2',
+	}
+
+	// 产品数量
+	ProductStatisticalData: IInfo = {
+		mimor: '产品数量',
+		primay: '5',
+	}
+
+	// 产品种类数量
+	ProductTypeStatisticalData: IInfo = {
+		mimor: '产品种类数量',
+		primay: '6',
+	}
+
+	// 文件总数
+	FileStatisticalData: IInfo = {
+		mimor: '文件总数',
+		primay: '21',
+	}
+
+	// 当日文件总数
+	DailyStatisticalData: IInfo = {
+		mimor: '当日文件总数',
+		primay: '25',
+	}
+
+	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = [
+		{ count: 5, size: 12, typeCount: 4, dt: new Date() },
+		{ count: 6, size: 12, typeCount: 4, dt: new Date() },
+		{ count: 7, size: 12, typeCount: 4, dt: new Date() },
+		{ count: 5, size: 12, typeCount: 4, dt: new Date() },
+	]
+
+	async loadAllGroupTaskStep(): Promise<{ code: string; name: string; step: number }[]> {
 		const now = new Date()
-		const groups = [GroupEnum.NMF]
-		let groupStepList = []
-		return groups.forEach((tempGroup) => {
-			getTaskByGroup({ code: tempGroup.toString(), dt: now }).then((res) => {
-				if (res.status === 200) {
-					res.data.forEach((element) => {
-						let tempGroupStep = {
-							code: element.group_code,
-							name: element.group_name,
-							step: element.step_list,
-						}
-						groupStepList.push(tempGroupStep)
-					})
-				}
-				return groupStepList
-			})
+		const groups = [GroupEnum.NMF, GroupEnum.PZJ]
+		let groupStepList: { code: string; name: string; step: number }[] = []
+		const codes = groups.map((temp) => {
+			return temp.toString()
 		})
+		await getTaskByGroup({ codes: codes, dt: now }).then((res) => {
+			if (res.status === 200) {
+				res.data.forEach((element) => {
+					let tempGroupStep = {
+						code: element.group_code,
+						name: element.group_name,
+						step: element.step_list,
+					}
+					groupStepList.push(tempGroupStep)
+				})
+			}
+		})
+
+		return groupStepList
 	}
 }
 </script>

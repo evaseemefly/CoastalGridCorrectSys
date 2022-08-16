@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nmefc.grid_monitor_service.mapper.BaseFileInfoMapper">
+  <resultMap id="BaseResultMap" type="com.nmefc.grid_monitor_service.bean.BaseFileInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="gmt_created" jdbcType="TIMESTAMP" property="gmtCreated" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="is_del" jdbcType="TINYINT" property="isDel" />
+    <result column="issurer_id" jdbcType="INTEGER" property="issurerId" />
+    <result column="forecast_time" jdbcType="TIMESTAMP" property="forecastTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="forecast_type" jdbcType="INTEGER" property="forecastType" />
+    <result column="forecast_area" jdbcType="INTEGER" property="forecastArea" />
+    <result column="forecast_period" jdbcType="INTEGER" property="forecastPeriod" />
+    <result column="forecast_interval" jdbcType="INTEGER" property="forecastInterval" />
+    <result column="forecast_element" jdbcType="INTEGER" property="forecastElement" />
+    <result column="revisal_type" jdbcType="INTEGER" property="revisalType" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_full_name" jdbcType="VARCHAR" property="fileFullName" />
+    <result column="file_ext" jdbcType="VARCHAR" property="fileExt" />
+    <result column="size" jdbcType="REAL" property="size" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="is_standard" jdbcType="TINYINT" property="isStandard" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, gmt_created, gmt_modified, is_del, issurer_id, forecast_time, update_time, product_type, 
+    forecast_type, forecast_area, forecast_period, forecast_interval, forecast_element, 
+    revisal_type, level, file_name, file_full_name, file_ext, size, path, is_standard
+  </sql>
+
+  <select id="selectByExample" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from base_file_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="getAllElements" resultMap="BaseResultMap">
+    SELECT
+    DISTINCT
+    forecast_element
+    FROM
+    base_file_info
+  </select>
+  <select id="getAllGroups" resultMap="BaseResultMap">
+    SELECT
+    DISTINCT
+    issurer_id
+    FROM
+    base_file_info
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from base_file_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from base_file_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfoExample">
+    delete from base_file_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfo">
+    insert into base_file_info (id, gmt_created, gmt_modified, 
+      is_del, issurer_id, forecast_time, 
+      update_time, product_type, forecast_type, 
+      forecast_area, forecast_period, forecast_interval, 
+      forecast_element, revisal_type, level, 
+      file_name, file_full_name, file_ext, 
+      size, path, is_standard
+      )
+    values (#{id,jdbcType=INTEGER}, #{gmtCreated,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{isDel,jdbcType=TINYINT}, #{issurerId,jdbcType=INTEGER}, #{forecastTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{productType,jdbcType=INTEGER}, #{forecastType,jdbcType=INTEGER}, 
+      #{forecastArea,jdbcType=INTEGER}, #{forecastPeriod,jdbcType=INTEGER}, #{forecastInterval,jdbcType=INTEGER}, 
+      #{forecastElement,jdbcType=INTEGER}, #{revisalType,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, 
+      #{fileName,jdbcType=VARCHAR}, #{fileFullName,jdbcType=VARCHAR}, #{fileExt,jdbcType=VARCHAR}, 
+      #{size,jdbcType=REAL}, #{path,jdbcType=VARCHAR}, #{isStandard,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfo">
+    insert into base_file_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="gmtCreated != null">
+        gmt_created,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="issurerId != null">
+        issurer_id,
+      </if>
+      <if test="forecastTime != null">
+        forecast_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="forecastType != null">
+        forecast_type,
+      </if>
+      <if test="forecastArea != null">
+        forecast_area,
+      </if>
+      <if test="forecastPeriod != null">
+        forecast_period,
+      </if>
+      <if test="forecastInterval != null">
+        forecast_interval,
+      </if>
+      <if test="forecastElement != null">
+        forecast_element,
+      </if>
+      <if test="revisalType != null">
+        revisal_type,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="fileFullName != null">
+        file_full_name,
+      </if>
+      <if test="fileExt != null">
+        file_ext,
+      </if>
+      <if test="size != null">
+        size,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="isStandard != null">
+        is_standard,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreated != null">
+        #{gmtCreated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="issurerId != null">
+        #{issurerId,jdbcType=INTEGER},
+      </if>
+      <if test="forecastTime != null">
+        #{forecastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=INTEGER},
+      </if>
+      <if test="forecastType != null">
+        #{forecastType,jdbcType=INTEGER},
+      </if>
+      <if test="forecastArea != null">
+        #{forecastArea,jdbcType=INTEGER},
+      </if>
+      <if test="forecastPeriod != null">
+        #{forecastPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="forecastInterval != null">
+        #{forecastInterval,jdbcType=INTEGER},
+      </if>
+      <if test="forecastElement != null">
+        #{forecastElement,jdbcType=INTEGER},
+      </if>
+      <if test="revisalType != null">
+        #{revisalType,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileFullName != null">
+        #{fileFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileExt != null">
+        #{fileExt,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        #{size,jdbcType=REAL},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="isStandard != null">
+        #{isStandard,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfoExample" resultType="java.lang.Long">
+    select count(*) from base_file_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update base_file_info
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.gmtCreated != null">
+        gmt_created = #{record.gmtCreated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.gmtModified != null">
+        gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDel != null">
+        is_del = #{record.isDel,jdbcType=TINYINT},
+      </if>
+      <if test="record.issurerId != null">
+        issurer_id = #{record.issurerId,jdbcType=INTEGER},
+      </if>
+      <if test="record.forecastTime != null">
+        forecast_time = #{record.forecastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.productType != null">
+        product_type = #{record.productType,jdbcType=INTEGER},
+      </if>
+      <if test="record.forecastType != null">
+        forecast_type = #{record.forecastType,jdbcType=INTEGER},
+      </if>
+      <if test="record.forecastArea != null">
+        forecast_area = #{record.forecastArea,jdbcType=INTEGER},
+      </if>
+      <if test="record.forecastPeriod != null">
+        forecast_period = #{record.forecastPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="record.forecastInterval != null">
+        forecast_interval = #{record.forecastInterval,jdbcType=INTEGER},
+      </if>
+      <if test="record.forecastElement != null">
+        forecast_element = #{record.forecastElement,jdbcType=INTEGER},
+      </if>
+      <if test="record.revisalType != null">
+        revisal_type = #{record.revisalType,jdbcType=INTEGER},
+      </if>
+      <if test="record.level != null">
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
+      <if test="record.fileName != null">
+        file_name = #{record.fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileFullName != null">
+        file_full_name = #{record.fileFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileExt != null">
+        file_ext = #{record.fileExt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.size != null">
+        size = #{record.size,jdbcType=REAL},
+      </if>
+      <if test="record.path != null">
+        path = #{record.path,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isStandard != null">
+        is_standard = #{record.isStandard,jdbcType=TINYINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update base_file_info
+    set id = #{record.id,jdbcType=INTEGER},
+      gmt_created = #{record.gmtCreated,jdbcType=TIMESTAMP},
+      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      is_del = #{record.isDel,jdbcType=TINYINT},
+      issurer_id = #{record.issurerId,jdbcType=INTEGER},
+      forecast_time = #{record.forecastTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      product_type = #{record.productType,jdbcType=INTEGER},
+      forecast_type = #{record.forecastType,jdbcType=INTEGER},
+      forecast_area = #{record.forecastArea,jdbcType=INTEGER},
+      forecast_period = #{record.forecastPeriod,jdbcType=INTEGER},
+      forecast_interval = #{record.forecastInterval,jdbcType=INTEGER},
+      forecast_element = #{record.forecastElement,jdbcType=INTEGER},
+      revisal_type = #{record.revisalType,jdbcType=INTEGER},
+      level = #{record.level,jdbcType=INTEGER},
+      file_name = #{record.fileName,jdbcType=VARCHAR},
+      file_full_name = #{record.fileFullName,jdbcType=VARCHAR},
+      file_ext = #{record.fileExt,jdbcType=VARCHAR},
+      size = #{record.size,jdbcType=REAL},
+      path = #{record.path,jdbcType=VARCHAR},
+      is_standard = #{record.isStandard,jdbcType=TINYINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfo">
+    update base_file_info
+    <set>
+      <if test="gmtCreated != null">
+        gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="issurerId != null">
+        issurer_id = #{issurerId,jdbcType=INTEGER},
+      </if>
+      <if test="forecastTime != null">
+        forecast_time = #{forecastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=INTEGER},
+      </if>
+      <if test="forecastType != null">
+        forecast_type = #{forecastType,jdbcType=INTEGER},
+      </if>
+      <if test="forecastArea != null">
+        forecast_area = #{forecastArea,jdbcType=INTEGER},
+      </if>
+      <if test="forecastPeriod != null">
+        forecast_period = #{forecastPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="forecastInterval != null">
+        forecast_interval = #{forecastInterval,jdbcType=INTEGER},
+      </if>
+      <if test="forecastElement != null">
+        forecast_element = #{forecastElement,jdbcType=INTEGER},
+      </if>
+      <if test="revisalType != null">
+        revisal_type = #{revisalType,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileFullName != null">
+        file_full_name = #{fileFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileExt != null">
+        file_ext = #{fileExt,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        size = #{size,jdbcType=REAL},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="isStandard != null">
+        is_standard = #{isStandard,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfo">
+    update base_file_info
+    set gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_del = #{isDel,jdbcType=TINYINT},
+      issurer_id = #{issurerId,jdbcType=INTEGER},
+      forecast_time = #{forecastTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      product_type = #{productType,jdbcType=INTEGER},
+      forecast_type = #{forecastType,jdbcType=INTEGER},
+      forecast_area = #{forecastArea,jdbcType=INTEGER},
+      forecast_period = #{forecastPeriod,jdbcType=INTEGER},
+      forecast_interval = #{forecastInterval,jdbcType=INTEGER},
+      forecast_element = #{forecastElement,jdbcType=INTEGER},
+      revisal_type = #{revisalType,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_full_name = #{fileFullName,jdbcType=VARCHAR},
+      file_ext = #{fileExt,jdbcType=VARCHAR},
+      size = #{size,jdbcType=REAL},
+      path = #{path,jdbcType=VARCHAR},
+      is_standard = #{isStandard,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

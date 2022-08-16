@@ -13,17 +13,31 @@
 					primayTile="测试主内容1"
 				></StatisticanInfoView>
 			</div>
-			<div class=""></div>
-			<div class="my-histogran">
-				<!-- <RecentlyHistogranView></RecentlyHistogranView> -->
-				<ProductProgressView></ProductProgressView>
+			<div class="my-statics-form">
+				<StatisticanInfoView
+					minorTitle="测试标题1"
+					primayTile="测试主内容1"
+				></StatisticanInfoView>
 			</div>
+			<div class="my-statics-form">
+				<StatisticanInfoView
+					minorTitle="测试标题1"
+					primayTile="测试主内容1"
+				></StatisticanInfoView>
+			</div>
+			<!-- <div class="my-histogran">
+				<ProductProgressView></ProductProgressView>
+			</div> -->
 		</div>
 		<div class="my-row height-2">
-			<RecentlyHistogranView></RecentlyHistogranView>
+			<RecentlyHistogranView
+				:nearlyStatisticsList="nearlyStatisticsList"
+			></RecentlyHistogranView>
 		</div>
-		<div class="my-row height-2"><StepView></StepView></div>
-		<div class="my-row height-2"><StepView></StepView></div>
+		<div class="my-row height-2" :key="step.key" v-for="step in groupStepList">
+			<StepView :activedStepIndex="step.index" :stepList="step.stepList"></StepView>
+		</div>
+		<!-- <div class="my-row height-2"><StepView></StepView></div> -->
 	</div>
 </template>
 <script lang="ts">
@@ -35,6 +49,10 @@ import StepView from '@/components/StepView.vue'
 import ProductProgressView from '@/components/ProductProgressView.vue'
 // import StatisticanInfoView from '@/components/StatisticanInfoView.vue'
 import StatisticanInfoView from '@/components/StatisticaInfoView.vue'
+// api
+import { getTaskByGroup, getGroupCount } from '@/api'
+// enmu
+import { GroupEnum } from '@/enum'
 @Component({
 	components: {
 		RecentlyHistogranView,
@@ -44,9 +62,33 @@ import StatisticanInfoView from '@/components/StatisticaInfoView.vue'
 	},
 })
 export default class MainView extends Vue {
-	mydata: any = null
-	get computedTest() {
-		return null
+	groupTaskStepList: {
+		code: string
+		name: string
+		stepList: { index: number; name: string; state: number }[]
+	}[] = []
+	groupStepList: { index: number; stepList: { title: string; desc: string }[] }[] = []
+	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = []
+
+	loadAllGroupTaskStep() {
+		const now = new Date()
+		const groups = [GroupEnum.NMF]
+		let groupStepList = []
+		return groups.forEach((tempGroup) => {
+			getTaskByGroup({ code: tempGroup.toString(), dt: now }).then((res) => {
+				if (res.status === 200) {
+					res.data.forEach((element) => {
+						let tempGroupStep = {
+							code: element.group_code,
+							name: element.group_name,
+							step: element.step_list,
+						}
+						groupStepList.push(tempGroupStep)
+					})
+				}
+				return groupStepList
+			})
+		})
 	}
 }
 </script>
@@ -63,7 +105,7 @@ export default class MainView extends Vue {
 	align-items: center;
 }
 .my-row {
-	background: #0a3d62;
+	background: #0a3d625e;
 	width: 80%;
 	margin: 10px;
 	display: flex;
@@ -76,7 +118,7 @@ export default class MainView extends Vue {
 .my-statics-form {
 	display: flex;
 	flex-grow: 3;
-	background: rgb(53, 171, 116);
+	// background: rgb(53, 171, 116);
 	height: 90%;
 	margin: 8px;
 }

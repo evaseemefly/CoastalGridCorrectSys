@@ -7,8 +7,22 @@ import * as echarts from 'echarts'
 @Component({})
 export default class RecentlyHistogranView extends Vue {
 	mydata: any = null
+
+	dtList: Date[] = []
+
+	fileCountList: number[] = []
+
+	@Prop(Array)
+	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = []
+
 	mounted() {
 		let dom = document.getElementById('recently_histogran')
+		const that = this
+
+		that.nearlyStatisticsList.forEach((temp) => {
+			that.dtList.push(temp.dt)
+			that.fileCountList.push(temp.count)
+		})
 		if (dom !== null) {
 			// 基于准备好的dom，初始化echarts实例
 			var myChart = echarts.init(dom)
@@ -25,22 +39,19 @@ export default class RecentlyHistogranView extends Vue {
 				},
 				tooltip: {},
 				xAxis: {
-					data: ['8-13', '8-14', '8-15', '8-16', '8-17', '8-18', '8-19'],
+					data: that.dtList,
 				},
 				yAxis: {},
 				series: [
 					{
 						name: '数据量',
 						type: 'line',
-						data: [5, 20, 36, 10, 10, 20,21],
+						data: that.fileCountList,
 					},
 				],
 				lineStyle: { color: '#f6b93b' },
 			})
 		}
-	}
-	get computedTest() {
-		return null
 	}
 }
 </script>

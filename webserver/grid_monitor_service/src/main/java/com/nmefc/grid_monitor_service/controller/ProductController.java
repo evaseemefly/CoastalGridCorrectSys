@@ -9,7 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+/**
+ *@Description: 产品控制器
+ *@Param:
+ *@Return:
+ *@Author: QuYuan
+ *@Date: 2022/8/17 20:34
+ */
 @CrossOrigin
 @RestController
 @RequestMapping("/product")

@@ -6,17 +6,19 @@ import com.nmefc.grid_monitor_service.bean.DictBase;
 import com.nmefc.grid_monitor_service.bean.DictBaseExample;
 import com.nmefc.grid_monitor_service.bean.middleBean.*;
 import com.nmefc.grid_monitor_service.bean.middleBean.Process;
-import com.nmefc.grid_monitor_service.bean.resultBean.GroupInfo;
-import com.nmefc.grid_monitor_service.bean.resultBean.ProcessInfo;
-import com.nmefc.grid_monitor_service.bean.resultBean.ProductInfo;
+import com.nmefc.grid_monitor_service.bean.resultBean.*;
 import com.nmefc.grid_monitor_service.common.ElementEnum;
 import com.nmefc.grid_monitor_service.common.ProcessEnum;
 import com.nmefc.grid_monitor_service.mapper.BaseFileInfoMapper;
 import com.nmefc.grid_monitor_service.mapper.DictBaseMapper;
 import com.nmefc.grid_monitor_service.service.BaseFileInfoService;
+import com.nmefc.grid_monitor_service.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,13 +116,18 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
 
             BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
             BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
-            System.out.println(startDate);
-            System.out.println(date);
+//            System.out.println(startDate);
+//            System.out.println(date);
 
             //检索机构ID等于传入的ID，并且时间在传入时间前24小时的数据
             criteria.andIssurerIdEqualTo(code).andForecastTimeBetween(startDate,date);
             try{
                 baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
+                //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
+                baseFileInfoList = baseFileInfoList.stream().collect(Collectors
+                        .collectingAndThen(
+                                Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
+                                ArrayList::new));
             }catch (Exception e){
                 throw e;
             }
@@ -162,7 +169,106 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
 
         return processInfoList;
     }
-/**
+
+    @Override
+    public StatisticsMainInfo getStatisticsMainInfo() {
+        //1. 获取机构数量
+        List<GroupInfo> groupInfoList = new ArrayList<>();
+        List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
+        groupInfoList = getGroupInfo();
+        //2. 获取产品数量
+        BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
+        baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
+        //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
+        baseFileInfoList = baseFileInfoList.stream().collect(Collectors
+                .collectingAndThen(
+                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
+                        ArrayList::new));
+        int count = baseFileInfoList.size();
+        //3. 获取产品总数据量
+        Double sum = baseFileInfoList.stream().mapToDouble(BaseFileInfo::getSize).sum();
+        //换算为GB单位
+        sum = sum/1000000000;
+        DecimalFormat df = new DecimalFormat("##########.##");
+//        String.format("%,.2f",num);
+        String size = df.format(sum) + " GB";
+        StatisticsMainInfo statisticsMainInfo = new StatisticsMainInfo(String.valueOf(groupInfoList.size()),String.valueOf(count),size);
+        return statisticsMainInfo;
+    }
+
+    @Override
+    public TodayFileInfo getOneDayFileInfo(Date queueDate) {
+
+        //1.获取当日文件总数
+        // 当前系统时间转成UTC时间
+        SimpleDateFormat queueDateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now = queueDateFormat.format(queueDate);
+        Date UTCNow = TimeUtil.localToUTC(now);
+        Date startTime;
+        Date endTime;
+        List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
+        //获得当日最小时刻
+        try {
+            startTime = TimeUtil.getZero(UTCNow);
+            endTime = TimeUtil.getEnd(UTCNow);
+            BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
+            BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
+            criteria.andForecastTimeBetween(startTime,endTime);
+            baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
+            //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
+            baseFileInfoList = baseFileInfoList.stream().collect(Collectors
+                    .collectingAndThen(
+                            Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
+                            ArrayList::new));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Integer count = baseFileInfoList.size();
+        //2. 获取当日文件总大小
+        Double sum = baseFileInfoList.stream().mapToDouble(BaseFileInfo::getSize).sum();
+        //换算为GB单位
+        sum = sum/1000000000;
+        DecimalFormat df = new DecimalFormat("##########.##");
+//        String.format("%,.2f",num);
+        String size = df.format(sum) + " GB";
+        //3. 获取文件类型总数
+        List<BaseFileInfo> newBaseFileInfoList = baseFileInfoList.stream().collect(Collectors
+                .collectingAndThen(
+                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getForecastType))),
+                        ArrayList::new));
+        Integer typeNum = newBaseFileInfoList.size();
+
+        return new TodayFileInfo(count.toString(),size,typeNum.toString());
+    }
+
+    @Override
+    public List<FileInfo> getFileInfo(Integer days) {
+        List<FileInfo> fileInfoList = new ArrayList<>();
+        //获取当天的相关文件信息
+        Date date = new Date();
+        //sf为返回结果时的时间格式，此时不需要时分秒
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        //queueDateFormat为LOCAL时间和UTC时间转换时的时间格式，此时需要时分秒
+        SimpleDateFormat queueDateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //获取前N天的
+        for(int index = 0;index < days;index++){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - index);
+            Date startDate = calendar.getTime();
+            TodayFileInfo todayFileInfo = getOneDayFileInfo(startDate);
+
+            String startDateStr = queueDateFormat.format(startDate);
+            Date UTCStartDateStr = TimeUtil.localToUTC(startDateStr);
+            String resultDateStr = sf.format(UTCStartDateStr);
+//            System.out.println(resultDateStr);
+            FileInfo todayFile = new FileInfo(todayFileInfo.getFile_count(),todayFileInfo.getFiles_size(),todayFileInfo.getFile_type_count(),resultDateStr);
+            fileInfoList.add(todayFile);
+        }
+        return fileInfoList;
+    }
+
+    /**
  *@Description:每个流程中检查文件内要素是否全
  *@Param: [baseFileInfoList]
  *@Return: java.util.List<java.lang.String> 记录缺少的要素

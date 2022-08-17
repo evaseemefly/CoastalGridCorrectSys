@@ -7,6 +7,8 @@ class IssureEnum(Enum):
          发布单位枚举——固定
     """
     NMF = 1001
+    PZJ = 1002
+    REF = 1003
 
 
 @unique
@@ -64,7 +66,8 @@ class LevelEnum(Enum):
     """
     L0 = 6101
     L1 = 6102
-    L3 = 6103
-    L4 = 6104
-    L5 = 6105
+    L2 = 6103
+    L3 = 6104
+    L4 = 6105
+    L5 = 6106
     L99 = 9999

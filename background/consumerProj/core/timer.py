@@ -4,7 +4,7 @@ from core.tasks import WatchFileTask
 
 
 def job():
-    WatchFileTask().to_do()
+    WatchFileTask().to_do(quene_count=10)
 
 
 def to_schedule():

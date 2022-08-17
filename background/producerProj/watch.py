@@ -6,6 +6,8 @@ import os
 import arrow
 import datetime
 import logging
+import pathlib
+from typing import List
 from settings import WATCH_SETTINGS, LOG_SETTINGS, CHILDREN_DIRS
 from cache import insert_to_redis
 
@@ -13,6 +15,8 @@ from cache import insert_to_redis
 LOGGING_PATH: str = LOG_SETTINGS.get('default').get('LOGGING_PATH')
 # 测试的监听路径
 TEST_WATCH_PATH: str = WATCH_SETTINGS.get('default').get('WATCH_ROOT_DIR')
+
+WATCH_DIRS: List[str] = WATCH_SETTINGS.get('default').get('WATCH_DIRS')
 
 # 创建一个logger，设置日志
 logger = logging.getLogger('MonitorDir')
@@ -51,6 +55,7 @@ def event_to_store(event, event_type: str):
     file_data = {
         'full_path': f'{event.src_path}',
         # 'gmt_created': datetime.datetime.utcnow().timestamp(),
+        'size': pathlib.Path(event.src_path).stat().st_size if pathlib.Path(event.src_path).is_file() else 0,
         'gmt_created': arrow.get().timestamp(),
         'event_type': event_type
     }
@@ -118,9 +123,11 @@ def watch_producer():
     @return:
     """
     observer = Observer()
-    event_handler = FileEventHandler()
-    # 监控目录
-    observer.schedule(event_handler, TEST_WATCH_PATH, True)
+    dirs: List[str] = WATCH_DIRS
+    for dir in dirs:
+        event_handler = FileEventHandler()
+        # 监控目录
+        observer.schedule(event_handler, dir, True)
     observer.start()
     try:
         while True:

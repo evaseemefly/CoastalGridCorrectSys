@@ -4,7 +4,9 @@
 # watch_dog 监听配置
 WATCH_SETTINGS = {
     'default': {
-        'WATCH_ROOT_DIR': r'D:\05data\05three_level_grid'  # 监听根目录
+        'WATCH_ROOT_DIR': r'/Users/evaseemefly/03data/03grid_data',  # 监听根目录
+        'WATCH_DIRS': [r'/Users/evaseemefly/03data/03grid_data/NMF', r'/Users/evaseemefly/03data/03grid_data/PZJ',
+                       r'/Users/evaseemefly/03data/03grid_data/REF']
     }
 }
 

@@ -1404,6 +1404,76 @@ public class BaseFileInfoExample {
             addCriterion("is_standard not between", value1, value2, "isStandard");
             return (Criteria) this;
         }
+
+        public Criteria andEventTypeIsNull() {
+            addCriterion("event_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeIsNotNull() {
+            addCriterion("event_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeEqualTo(String value) {
+            addCriterion("event_type =", value, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeNotEqualTo(String value) {
+            addCriterion("event_type <>", value, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeGreaterThan(String value) {
+            addCriterion("event_type >", value, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("event_type >=", value, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeLessThan(String value) {
+            addCriterion("event_type <", value, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeLessThanOrEqualTo(String value) {
+            addCriterion("event_type <=", value, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeLike(String value) {
+            addCriterion("event_type like", value, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeNotLike(String value) {
+            addCriterion("event_type not like", value, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeIn(List<String> values) {
+            addCriterion("event_type in", values, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeNotIn(List<String> values) {
+            addCriterion("event_type not in", values, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeBetween(String value1, String value2) {
+            addCriterion("event_type between", value1, value2, "eventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventTypeNotBetween(String value1, String value2) {
+            addCriterion("event_type not between", value1, value2, "eventType");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

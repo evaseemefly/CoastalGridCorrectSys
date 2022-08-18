@@ -2,6 +2,7 @@
 import redis
 import datetime
 import json
+import time
 from settings import REDIS_SETTINGS
 
 redis_pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0)
@@ -35,3 +36,16 @@ def insert_to_redis(file_data: dict) -> bool:
     except Exception as e:
         is_ok = False
     return is_ok
+
+
+def lpush_to_redis(msg: str, checkExisted=True):
+    redis_conn.
+    redis_conn
+
+# def insert_file_to_cache(full_name:str):
+#     file_info={
+#         full_path:full_name,
+#         timestamp:time.time()
+#     }
+#     file_info_json=json.dumps(file_info)
+#

@@ -135,8 +135,9 @@ class FileEventHandler(FileSystemEventHandler):
             logger.info("directory modified:{0}".format(event.src_path))
         else:
             # logger.info("file modified:{0}".format(event.src_path))
-            if timer_interval_check(event, event.src_path):
-                event_to_store(event, 'modified')
+            logger.info("file modified:{0}".format(event.src_path))
+            # if timer_interval_check(event, event.src_path):
+            #     event_to_store(event, 'modified')
 
 
 def watch_producer():

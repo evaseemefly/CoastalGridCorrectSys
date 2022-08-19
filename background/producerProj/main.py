@@ -1,8 +1,11 @@
 from watch import watch_producer
-from notify import
+from notify import notify_producer, inotify_producer
+
 
 def main():
-    watch_producer()
+    # watch_producer()
+    notify_producer()
+    # inotify_producer()
     pass
 
 

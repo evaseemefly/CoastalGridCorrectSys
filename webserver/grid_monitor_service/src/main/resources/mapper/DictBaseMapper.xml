@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nmefc.grid_monitor_service.mapper.DictBaseMapper">
+  <resultMap id="BaseResultMap" type="com.nmefc.grid_monitor_service.bean.DictBase">
+    <id column="code" jdbcType="INTEGER" property="code" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="type_code" jdbcType="VARCHAR" property="typeCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="val" jdbcType="VARCHAR" property="val" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    code, pid, type_code, name, remarks, val
+  </sql>
+  <select id="selectByExample" parameterType="com.nmefc.grid_monitor_service.bean.DictBaseExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from dict_base
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from dict_base
+    where code = #{code,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from dict_base
+    where code = #{code,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.nmefc.grid_monitor_service.bean.DictBaseExample">
+    delete from dict_base
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.nmefc.grid_monitor_service.bean.DictBase">
+    insert into dict_base (code, pid, type_code, 
+      name, remarks, val)
+    values (#{code,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{typeCode,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{val,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nmefc.grid_monitor_service.bean.DictBase">
+    insert into dict_base
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        code,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="typeCode != null">
+        type_code,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="val != null">
+        val,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        #{code,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="typeCode != null">
+        #{typeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="val != null">
+        #{val,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.nmefc.grid_monitor_service.bean.DictBaseExample" resultType="java.lang.Long">
+    select count(*) from dict_base
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update dict_base
+    <set>
+      <if test="record.code != null">
+        code = #{record.code,jdbcType=INTEGER},
+      </if>
+      <if test="record.pid != null">
+        pid = #{record.pid,jdbcType=INTEGER},
+      </if>
+      <if test="record.typeCode != null">
+        type_code = #{record.typeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remarks != null">
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.val != null">
+        val = #{record.val,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update dict_base
+    set code = #{record.code,jdbcType=INTEGER},
+      pid = #{record.pid,jdbcType=INTEGER},
+      type_code = #{record.typeCode,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+      val = #{record.val,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nmefc.grid_monitor_service.bean.DictBase">
+    update dict_base
+    <set>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="typeCode != null">
+        type_code = #{typeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="val != null">
+        val = #{val,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where code = #{code,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nmefc.grid_monitor_service.bean.DictBase">
+    update dict_base
+    set pid = #{pid,jdbcType=INTEGER},
+      type_code = #{typeCode,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      val = #{val,jdbcType=VARCHAR}
+    where code = #{code,jdbcType=INTEGER}
+  </update>
+</mapper>

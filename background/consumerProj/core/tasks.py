@@ -30,6 +30,7 @@ class FileBase:
         """
         self.full_path = full_path
         self.update_dt = update_dt
+        self.event_type: str = kwargs.get('event_type')
         self._path: pathlib = pathlib.Path(full_path)
 
     @property
@@ -51,6 +52,14 @@ class FileBase:
         @return:
         """
         return self._path.stem
+
+    @property
+    def file_size(self) -> int:
+        """
+            + 22-08-16 获取指定路径的文件的大小
+        """
+        size = pathlib.Path(self.full_path).stat().st_size if pathlib.Path(self.full_path).is_file() else 0,
+        return size
 
     @property
     def file_ext(self) -> str:
@@ -141,8 +150,10 @@ class FileBase:
         """
         val = self.file_name_splice[4]
         forecast_dt_str: str = val
-        forecast_dt: arrow = arrow.get(forecast_dt_str, 'YYYYMMDDhhmm')
-        return forecast_dt
+        # TODO:[-] 22-08-16 注意此处直接从文件名读取的事件为 local 时间需要 -> utc
+        forecast_dt_local: arrow = arrow.get(forecast_dt_str, 'YYYYMMDDhhmm')
+        forecast_dt_utc: arrow = forecast_dt_local.shift(hours=-8)
+        return forecast_dt_utc
 
     @property
     def stamp_forecast_element(self) -> ForecastElementEnum:
@@ -251,25 +262,29 @@ class WatchFileTask(ITask):
         @param kwargs:
         @return:
         """
+        quene_count: int = kwargs.get('quene_count', 1)
         # self.get_catche_list()
-        watch_file = self.get_cache_file()
-        if watch_file is not None:
-            # {
-            # 'full_path': 'D:\\05data\\05three_level_grid\\NMF_BEN_OSM_CSDT_202208110800_120003_SSW_00_L0.nc',
-            # 'gmt_created': 1660156336.054919,
-            # 'event_type': 'modified'
-            # }
-            file_full_path: str = watch_file.get('full_path')
-            file_create_ts: float = float(watch_file.get('gmt_created'))
-            file_create_dt_utc: datetime.datetime = arrow.get(file_create_ts).datetime
+        for index in range(quene_count):
+            watch_file = self.get_cache_file()
+            if watch_file is not None:
+                # {
+                # 'full_path': 'D:\\05data\\05three_level_grid\\NMF_BEN_OSM_CSDT_202208110800_120003_SSW_00_L0.nc',
+                # 'gmt_created': 1660156336.054919,
+                # 'event_type': 'modified'
+                # }
+                file_full_path: str = watch_file.get('full_path')
+                file_create_ts: float = float(watch_file.get('gmt_created'))
+                file_event_type_str: str = watch_file.get('event_type')
+                file_create_dt_utc: datetime.datetime = arrow.get(file_create_ts).datetime
 
-            file_info = FileBase(file_full_path, file_create_dt_utc)
-            if file_info is not None:
-                msg = f'now:{datetime.datetime.now()},当前处理文件:{file_info.file_name}'
-                self.to_store(file_info)
-            else:
-                msg = f'now:{datetime.datetime.now()},当前无需处理文件'
-            print(msg)
+                file_info = FileBase(file_full_path, file_create_dt_utc, event_type=file_event_type_str)
+                if file_info is not None:
+                    msg = f'now:{datetime.datetime.now()},当前处理文件:{file_info.file_name}'
+                    self.to_store(file_info)
+                else:
+                    msg = f'now:{datetime.datetime.now()},当前无需处理文件'
+                print(msg)
+
         pass
 
     def get_cache_file(self) -> dict:
@@ -312,11 +327,15 @@ class WatchFileTask(ITask):
                                        forecast_period=file.stamp_period,
                                        forecast_interval=file.stamp_interval,
                                        forecast_element=file.stamp_forecast_element.value,
+                                       level=file.stamp_level.value,
+                                       revisal_type=file.stamp_revisal_type.value,
                                        file_name=file.file_name,
                                        file_ext=file.file_ext,
                                        file_full_name=file.file_full_name,
+                                       size=file.file_size,
                                        path=file.dir_path,
-                                       is_standard=self.check_is_stand()
+                                       is_standard=self.check_is_stand(),
+                                       event_type=file.event_type
                                        )
         self.session.add(file_model)
         self.session.commit()
@@ -325,19 +344,18 @@ class WatchFileTask(ITask):
     def check_is_stand(self, **kwargs) -> bool:
         return False
 
-
-class FileWatchFactory:
-    def __init__(self):
-        pass
-
-    def run(self, full_path: str, gmt_created: datetime.datetime):
-        """
-            根据当前获取的文件全路径执行后续工作流程
-        @param full_path:
-        @param gmt_created:
-        @return:
-        """
-
-        fileInfo = FileBase(full_path, gmt_created=gmt_created)
-        task: ITask = WatchFileTask(fileInfo)
-        task.to_do()
+# class FileWatchFactory:
+#     def __init__(self):
+#         pass
+#
+#     def run(self, full_path: str, gmt_created: datetime.datetime):
+#         """
+#             根据当前获取的文件全路径执行后续工作流程
+#         @param full_path:
+#         @param gmt_created:
+#         @return:
+#         """
+#
+#         fileInfo = FileBase(full_path, gmt_created=gmt_created)
+#         task: ITask = WatchFileTask(fileInfo)
+#         task.to_do()

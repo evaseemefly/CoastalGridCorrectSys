@@ -51,5 +51,6 @@ class BaseFileInfoModel(BaseMeta):
     size = Column(Float, nullable=False)
     path = Column(VARCHAR(500), nullable=False)
     is_standard = Column(Integer, nullable=False)  # 是否标准化
+    event_type = Column(VARCHAR(20), nullable=False)
     # case_state = Column(Integer, nullable=False)
     # tid = Column(Integer, nullable=False)

@@ -6,6 +6,8 @@ import os
 import arrow
 import datetime
 import logging
+import pathlib
+from typing import List
 from settings import WATCH_SETTINGS, LOG_SETTINGS, CHILDREN_DIRS
 from cache import insert_to_redis
 
@@ -13,6 +15,28 @@ from cache import insert_to_redis
 LOGGING_PATH: str = LOG_SETTINGS.get('default').get('LOGGING_PATH')
 # 测试的监听路径
 TEST_WATCH_PATH: str = WATCH_SETTINGS.get('default').get('WATCH_ROOT_DIR')
+
+WATCH_DIRS: List[str] = WATCH_SETTINGS.get('default').get('WATCH_DIRS')
+
+GLOBAL_FILE_FULL_PATH = None
+GLOBAL_TIME_REFERENCE = None
+
+
+def timer_interval_check(event, full_path: str) -> bool:
+    is_ok = False
+    global GLOBAL_FILE_FULL_PATH, GLOBAL_TIME_REFERENCE
+    # 获取当前时间
+    now = time.time()
+    if GLOBAL_FILE_FULL_PATH is None:
+        GLOBAL_FILE_FULL_PATH = full_path
+    if GLOBAL_TIME_REFERENCE is None:
+        GLOBAL_TIME_REFERENCE = now
+    if full_path != GLOBAL_FILE_FULL_PATH and now - GLOBAL_TIME_REFERENCE > 3:
+        is_ok = True
+    GLOBAL_TIME_REFERENCE = now
+    GLOBAL_FILE_FULL_PATH = full_path
+    return is_ok
+
 
 # 创建一个logger，设置日志
 logger = logging.getLogger('MonitorDir')
@@ -51,6 +75,7 @@ def event_to_store(event, event_type: str):
     file_data = {
         'full_path': f'{event.src_path}',
         # 'gmt_created': datetime.datetime.utcnow().timestamp(),
+        'size': pathlib.Path(event.src_path).stat().st_size if pathlib.Path(event.src_path).is_file() else 0,
         'gmt_created': arrow.get().timestamp(),
         'event_type': event_type
     }
@@ -82,7 +107,8 @@ class FileEventHandler(FileSystemEventHandler):
             logger.info("directory deleted:{0}".format(event.src_path))
         else:
             # logger.info("file deleted:{0}".format(event.src_path))
-            event_to_store(event, 'deleted')
+            if timer_interval_check(event, event.src_path):
+                event_to_store(event, 'deleted')
 
     def getTime(self):
         # 单位 s
@@ -109,7 +135,9 @@ class FileEventHandler(FileSystemEventHandler):
             logger.info("directory modified:{0}".format(event.src_path))
         else:
             # logger.info("file modified:{0}".format(event.src_path))
-            event_to_store(event, 'modified')
+            logger.info("file modified:{0}".format(event.src_path))
+            # if timer_interval_check(event, event.src_path):
+            #     event_to_store(event, 'modified')
 
 
 def watch_producer():
@@ -118,9 +146,11 @@ def watch_producer():
     @return:
     """
     observer = Observer()
-    event_handler = FileEventHandler()
-    # 监控目录
-    observer.schedule(event_handler, TEST_WATCH_PATH, True)
+    dirs: List[str] = WATCH_DIRS
+    for dir in dirs:
+        event_handler = FileEventHandler()
+        # 监控目录
+        observer.schedule(event_handler, dir, True)
     observer.start()
     try:
         while True:
@@ -128,3 +158,5 @@ def watch_producer():
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+

@@ -50,7 +50,14 @@ import ProductProgressView from '@/components/ProductProgressView.vue'
 // import StatisticanInfoView from '@/components/StatisticanInfoView.vue'
 import StatisticanInfoView from '@/components/StatisticaInfoView.vue'
 // api
-import { getTaskByGroup, getGroupCount } from '@/api'
+import {
+	getTaskByGroup,
+	getGroupCount,
+	getAllProduct,
+	getProductMain,
+	getNearlyProductInfo,
+	getProductDailyInfo,
+} from '@/api'
 // enmu
 import { GroupEnum } from '@/enum'
 interface IInfo {
@@ -93,7 +100,7 @@ export default class MainView extends Vue {
 	// 机构数量
 	GroupStatisticalData: IInfo = {
 		mimor: '机构数量',
-		primay: '2',
+		primay: '0',
 	}
 
 	// 产品数量
@@ -105,7 +112,7 @@ export default class MainView extends Vue {
 	// 产品种类数量
 	ProductTypeStatisticalData: IInfo = {
 		mimor: '产品种类数量',
-		primay: '6',
+		primay: '0',
 	}
 
 	// 文件总数
@@ -117,7 +124,7 @@ export default class MainView extends Vue {
 	// 当日文件总数
 	DailyStatisticalData: IInfo = {
 		mimor: '当日文件总数',
-		primay: '25',
+		primay: '0',
 	}
 
 	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = [
@@ -148,6 +155,47 @@ export default class MainView extends Vue {
 		})
 
 		return groupStepList
+	}
+
+	mounted() {
+		const that = this
+		// 获取机构总数
+		getGroupCount().then(
+			(res: {
+				status: number
+				data: {
+					group_code: string
+					group_name: string
+				}[]
+			}) => {
+				that.GroupStatisticalData.primay =
+					res.data !== undefined ? res.data.length.toString() : '0'
+			}
+		)
+		// 获取产品总数
+		getAllProduct().then(
+			(res: {
+				status: number
+				data: {
+					product_code: string
+					product_name: string
+				}[]
+			}) => {
+				that.ProductTypeStatisticalData.primay =
+					res.data !== undefined ? res.data.length.toString() : '0'
+			}
+		)
+		// 获取产品种类总数
+		// 获取当日文件总数
+		getProductDailyInfo().then(
+			(res: { status: number; data: { files_count: number; files_size: number } }) => {
+				that.DailyStatisticalData.primay =
+					res.data !== undefined ? res.data.files_count.toString() : '0'
+			}
+		)
+		this.loadAllGroupTaskStep().then((res) => {
+			console.log(res)
+		})
 	}
 }
 </script>

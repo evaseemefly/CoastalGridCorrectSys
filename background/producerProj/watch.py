@@ -18,6 +18,26 @@ TEST_WATCH_PATH: str = WATCH_SETTINGS.get('default').get('WATCH_ROOT_DIR')
 
 WATCH_DIRS: List[str] = WATCH_SETTINGS.get('default').get('WATCH_DIRS')
 
+GLOBAL_FILE_FULL_PATH = None
+GLOBAL_TIME_REFERENCE = None
+
+
+def timer_interval_check(event, full_path: str) -> bool:
+    is_ok = False
+    global GLOBAL_FILE_FULL_PATH, GLOBAL_TIME_REFERENCE
+    # 获取当前时间
+    now = time.time()
+    if GLOBAL_FILE_FULL_PATH is None:
+        GLOBAL_FILE_FULL_PATH = full_path
+    if GLOBAL_TIME_REFERENCE is None:
+        GLOBAL_TIME_REFERENCE = now
+    if full_path != GLOBAL_FILE_FULL_PATH and now - GLOBAL_TIME_REFERENCE > 3:
+        is_ok = True
+    GLOBAL_TIME_REFERENCE = now
+    GLOBAL_FILE_FULL_PATH = full_path
+    return is_ok
+
+
 # 创建一个logger，设置日志
 logger = logging.getLogger('MonitorDir')
 logger.setLevel(logging.DEBUG)
@@ -87,7 +107,8 @@ class FileEventHandler(FileSystemEventHandler):
             logger.info("directory deleted:{0}".format(event.src_path))
         else:
             # logger.info("file deleted:{0}".format(event.src_path))
-            event_to_store(event, 'deleted')
+            if timer_interval_check(event, event.src_path):
+                event_to_store(event, 'deleted')
 
     def getTime(self):
         # 单位 s
@@ -114,7 +135,9 @@ class FileEventHandler(FileSystemEventHandler):
             logger.info("directory modified:{0}".format(event.src_path))
         else:
             # logger.info("file modified:{0}".format(event.src_path))
-            event_to_store(event, 'modified')
+            logger.info("file modified:{0}".format(event.src_path))
+            # if timer_interval_check(event, event.src_path):
+            #     event_to_store(event, 'modified')
 
 
 def watch_producer():
@@ -135,3 +158,5 @@ def watch_producer():
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+

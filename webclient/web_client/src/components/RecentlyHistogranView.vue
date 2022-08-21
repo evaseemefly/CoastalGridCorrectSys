@@ -46,9 +46,12 @@ export default class RecentlyHistogranView extends Vue {
 			myChart.setOption({
 				title: {
 					text: '近7日数据量',
+					textStyle: {
+						color: 'white',
+					},
 				},
 				grid: {
-					left: '5%',
+					left: '8%',
 					right: '5%',
 					top: '5%',
 					bottom: '15%',
@@ -57,7 +60,11 @@ export default class RecentlyHistogranView extends Vue {
 				xAxis: {
 					data: that.dtStrList,
 				},
-				yAxis: {},
+				yAxis: {
+					splitLine: {
+						show: false,
+					},
+				},
 				series: [
 					{
 						name: '数据量',

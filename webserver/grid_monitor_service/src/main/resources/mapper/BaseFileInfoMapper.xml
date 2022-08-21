@@ -23,6 +23,7 @@
     <result column="size" jdbcType="REAL" property="size" />
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="is_standard" jdbcType="TINYINT" property="isStandard" />
+    <result column="event_type" jdbcType="VARCHAR" property="eventType" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -85,9 +86,9 @@
   <sql id="Base_Column_List">
     id, gmt_created, gmt_modified, is_del, issurer_id, forecast_time, update_time, product_type, 
     forecast_type, forecast_area, forecast_period, forecast_interval, forecast_element, 
-    revisal_type, level, file_name, file_full_name, file_ext, size, path, is_standard
+    revisal_type, level, file_name, file_full_name, file_ext, size, path, is_standard, 
+    event_type
   </sql>
-
   <select id="selectByExample" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfoExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -102,6 +103,12 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from base_file_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
   <select id="getAllElements" resultMap="BaseResultMap">
     SELECT
     DISTINCT
@@ -115,12 +122,6 @@
     issurer_id
     FROM
     base_file_info
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from base_file_info
-    where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from base_file_info
@@ -139,16 +140,16 @@
       forecast_area, forecast_period, forecast_interval, 
       forecast_element, revisal_type, level, 
       file_name, file_full_name, file_ext, 
-      size, path, is_standard
-      )
+      size, path, is_standard, 
+      event_type)
     values (#{id,jdbcType=INTEGER}, #{gmtCreated,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
       #{isDel,jdbcType=TINYINT}, #{issurerId,jdbcType=INTEGER}, #{forecastTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{productType,jdbcType=INTEGER}, #{forecastType,jdbcType=INTEGER}, 
       #{forecastArea,jdbcType=INTEGER}, #{forecastPeriod,jdbcType=INTEGER}, #{forecastInterval,jdbcType=INTEGER}, 
       #{forecastElement,jdbcType=INTEGER}, #{revisalType,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, 
       #{fileName,jdbcType=VARCHAR}, #{fileFullName,jdbcType=VARCHAR}, #{fileExt,jdbcType=VARCHAR}, 
-      #{size,jdbcType=REAL}, #{path,jdbcType=VARCHAR}, #{isStandard,jdbcType=TINYINT}
-      )
+      #{size,jdbcType=REAL}, #{path,jdbcType=VARCHAR}, #{isStandard,jdbcType=TINYINT}, 
+      #{eventType,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.nmefc.grid_monitor_service.bean.BaseFileInfo">
     insert into base_file_info
@@ -216,6 +217,9 @@
       <if test="isStandard != null">
         is_standard,
       </if>
+      <if test="eventType != null">
+        event_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -280,6 +284,9 @@
       </if>
       <if test="isStandard != null">
         #{isStandard,jdbcType=TINYINT},
+      </if>
+      <if test="eventType != null">
+        #{eventType,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -355,6 +362,9 @@
       <if test="record.isStandard != null">
         is_standard = #{record.isStandard,jdbcType=TINYINT},
       </if>
+      <if test="record.eventType != null">
+        event_type = #{record.eventType,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -382,7 +392,8 @@
       file_ext = #{record.fileExt,jdbcType=VARCHAR},
       size = #{record.size,jdbcType=REAL},
       path = #{record.path,jdbcType=VARCHAR},
-      is_standard = #{record.isStandard,jdbcType=TINYINT}
+      is_standard = #{record.isStandard,jdbcType=TINYINT},
+      event_type = #{record.eventType,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -450,6 +461,9 @@
       <if test="isStandard != null">
         is_standard = #{isStandard,jdbcType=TINYINT},
       </if>
+      <if test="eventType != null">
+        event_type = #{eventType,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -474,7 +488,8 @@
       file_ext = #{fileExt,jdbcType=VARCHAR},
       size = #{size,jdbcType=REAL},
       path = #{path,jdbcType=VARCHAR},
-      is_standard = #{isStandard,jdbcType=TINYINT}
+      is_standard = #{isStandard,jdbcType=TINYINT},
+      event_type = #{eventType,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -48,8 +48,8 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         if (dictBaseList.size()>0 && baseFileInfoList.size()>0){
             for(BaseFileInfo item : baseFileInfoList){
                 for(DictBase dictItem : dictBaseList){
-                    if (item.getIssurerId().equals(dictItem.getCode())){
-                        ProductInfo productInfo = new ProductInfo(item.getIssurerId(),dictItem.getRemarks());
+                    if (item.getForecastElement().equals(dictItem.getCode())){
+                        ProductInfo productInfo = new ProductInfo(item.getForecastElement(),dictItem.getRemarks());
                         productInfoList.add(productInfo);
                     }
                 }

@@ -45,6 +45,8 @@ public class BaseFileInfo {
 
     private Byte isStandard;
 
+    private String eventType;
+
     public Integer getId() {
         return id;
     }
@@ -211,5 +213,13 @@ public class BaseFileInfo {
 
     public void setIsStandard(Byte isStandard) {
         this.isStandard = isStandard;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType == null ? null : eventType.trim();
     }
 }

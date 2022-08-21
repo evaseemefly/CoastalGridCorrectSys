@@ -4,23 +4,39 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import * as echarts from 'echarts'
+import { fortmatDate2YMD } from '@/filter'
 @Component({})
 export default class RecentlyHistogranView extends Vue {
-	mydata: any = null
-
 	dtList: Date[] = []
+	dtStrList: string[] = []
 
 	fileCountList: number[] = []
 
 	@Prop(Array)
-	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = []
+	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[]
 
-	mounted() {
+	get get7DaysStatisticsList(): { count: number; size: number; typeCount: number; dt: Date }[] {
+		return [...this.nearlyStatisticsList]
+	}
+
+	@Watch('get7DaysStatisticsList')
+	on7DaysStatisticsList(
+		val: { count: number; size: number; typeCount: number; dt: Date }[]
+	): void {
+		console.log(`监听到7days统计传入发声变化:${val}`)
+		this.initChart()
+	}
+
+	initChart(): void {
 		let dom = document.getElementById('recently_histogran')
 		const that = this
-
+		this.dtList = []
+		this.dtStrList = []
+		this.fileCountList = []
 		that.nearlyStatisticsList.forEach((temp) => {
-			that.dtList.push(temp.dt)
+			const dtStr = fortmatDate2YMD(temp.dt)
+			// that.dtList.push(temp.dt)
+			that.dtStrList.push(dtStr)
 			that.fileCountList.push(temp.count)
 		})
 		if (dom !== null) {
@@ -39,7 +55,7 @@ export default class RecentlyHistogranView extends Vue {
 				},
 				tooltip: {},
 				xAxis: {
-					data: that.dtList,
+					data: that.dtStrList,
 				},
 				yAxis: {},
 				series: [
@@ -52,6 +68,10 @@ export default class RecentlyHistogranView extends Vue {
 				lineStyle: { color: '#f6b93b' },
 			})
 		}
+	}
+
+	mounted() {
+		this.initChart()
 	}
 }
 </script>

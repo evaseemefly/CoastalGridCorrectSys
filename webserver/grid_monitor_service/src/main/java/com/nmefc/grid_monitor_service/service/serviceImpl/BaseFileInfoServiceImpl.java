@@ -192,7 +192,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         DecimalFormat df = new DecimalFormat("##########.##");
 //        String.format("%,.2f",num);
         String size = df.format(sum) + " GB";
-        StatisticsMainInfo statisticsMainInfo = new StatisticsMainInfo(String.valueOf(groupInfoList.size()),String.valueOf(count),size);
+        StatisticsMainInfo statisticsMainInfo = new StatisticsMainInfo(groupInfoList.size(),count,sum);
         return statisticsMainInfo;
     }
 
@@ -238,7 +238,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
                         ArrayList::new));
         Integer typeNum = newBaseFileInfoList.size();
 
-        return new TodayFileInfo(count.toString(),size,typeNum.toString());
+        return new TodayFileInfo(count,sum,typeNum);
     }
 
     @Override

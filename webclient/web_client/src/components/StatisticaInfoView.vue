@@ -8,15 +8,10 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 @Component({})
 export default class StatisticanInfoView extends Vue {
-	mydata: any = null
 	@Prop(String)
-	minorTitle = ''
+	minorTitle :string
 	@Prop(String)
-	primayTile = ''
-
-	get computedTest() {
-		return null
-	}
+	primayTile :string
 }
 </script>
 <style scoped lang="less">

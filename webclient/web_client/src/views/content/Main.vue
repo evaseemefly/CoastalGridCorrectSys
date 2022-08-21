@@ -135,10 +135,6 @@ export default class MainView extends Vue {
 	}
 
 	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = [
-		{ count: 5, size: 12, typeCount: 4, dt: new Date() },
-		{ count: 6, size: 12, typeCount: 4, dt: new Date() },
-		{ count: 7, size: 12, typeCount: 4, dt: new Date() },
-		{ count: 5, size: 12, typeCount: 4, dt: new Date() },
 	]
 
 	/** 加载当前全部机构的作业状态 */

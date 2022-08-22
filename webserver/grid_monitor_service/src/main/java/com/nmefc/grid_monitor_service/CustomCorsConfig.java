@@ -13,11 +13,11 @@ public class CustomCorsConfig {
         // 设置指定 url 的过滤
         // 20-12-23 修改为 -> http://neargoos.nmefc.cn
         // http://localhost:8083
-        corsConfiguration.addAllowedOrigin("http://localhost:8081");
-        // corsConfiguration.addAllowedOrigin("*：8083");
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);
+
         return corsConfiguration;
     }
 

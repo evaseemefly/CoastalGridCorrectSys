@@ -8,8 +8,8 @@ axios.defaults.withCredentials = true
 // 	// 'Access-Control-Allow-Origin': 'http://121.36.51.94:8080',
 // }
 
-// const HOST = 'http://121.36.51.94:8080'
-const HOST = 'http://localhost:8080'
+const HOST = 'http://121.36.51.94:8080'
+// const HOST = 'http://localhost:8080'
 
 const getTaskByGroup = (parm: { codes: string[]; dt: Date }) => {
 	const area = 'task'

@@ -9,15 +9,15 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 @Component({})
 export default class StatisticanInfoView extends Vue {
 	@Prop(String)
-	minorTitle :string
+	minorTitle: string
 	@Prop(String)
-	primayTile :string
+	primayTile: string
 }
 </script>
 <style scoped lang="less">
 .statistican-info {
+	height: 90%;
 	width: 200px;
-	height: 150px;
 	background: #0a3d62;
 	display: flex;
 	border-radius: 10px;

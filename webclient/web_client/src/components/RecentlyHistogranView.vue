@@ -23,7 +23,7 @@ export default class RecentlyHistogranView extends Vue {
 	on7DaysStatisticsList(
 		val: { count: number; size: number; typeCount: number; dt: Date }[]
 	): void {
-		console.log(`监听到7days统计传入发声变化:${val}`)
+		// console.log(`监听到7days统计传入发声变化:${val}`)
 		this.initChart()
 	}
 
@@ -43,7 +43,8 @@ export default class RecentlyHistogranView extends Vue {
 			// 基于准备好的dom，初始化echarts实例
 			var myChart = echarts.init(dom)
 			// 绘制图表
-			myChart.setOption({
+			// 暂时不使用 line,使用 bar
+			const option = {
 				title: {
 					text: '近7日数据量',
 					textStyle: {
@@ -73,7 +74,58 @@ export default class RecentlyHistogranView extends Vue {
 					},
 				],
 				lineStyle: { color: '#f6b93b' },
-			})
+			}
+			// const option = {
+			// 	tooltip: {
+			// 		trigger: 'axis',
+			// 		axisPointer: {
+			// 			type: 'shadow',
+			// 		},
+			// 	},
+			// 	grid: {
+			// 		left: '3%',
+			// 		right: '4%',
+			// 		bottom: '1%',
+			// 		containLabel: true,
+			// 	},
+			// 	xAxis: [
+			// 		{
+			// 			type: 'category',
+			// 			data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+			// 			axisTick: {
+			// 				alignWithLabel: true,
+			// 			},
+			// 		},
+			// 	],
+			// 	yAxis: [
+			// 		{
+			// 			type: 'value',
+			// 		},
+			// 	],
+			// 	series: [
+			// 		{
+			// 			name: 'Direct',
+			// 			type: 'bar',
+			// 			itemStyle: {
+			// 				color: '#38ada9',
+			// 			},
+			// 			barWidth: '60%',
+			// 			data: [10, 52, 200, 334, 390, 330, 220],
+			// 		},
+			// 	],
+			// }
+			// const element = document.getElementById('recently_histogran')
+			// setTimeout(() => {
+			// 	// 基于准备好的dom，初始化echarts实例
+			// 	const myChart = echarts.init(element, '', {
+			// 		width: document.getElementById('recently_histogran')?.offsetWidth,
+			// 		height: document.getElementById('recently_histogran')?.offsetHeight,
+			// 	})
+			// 	// 绘制图表
+			// 	option && myChart.setOption(option)
+			// }, 0)
+
+			option && myChart.setOption(option)
 		}
 	}
 
@@ -84,7 +136,9 @@ export default class RecentlyHistogranView extends Vue {
 </script>
 <style scoped lang="less">
 #recently_histogran {
-	height: 100%;
-	width: 100%;
+	// height: 100%;
+	width: 90%;
+	height: 250px;
+	// width: 260px;
 }
 </style>

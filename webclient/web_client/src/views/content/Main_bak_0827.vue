@@ -1,6 +1,6 @@
 <template>
 	<div class="main-content">
-		<div class="my-row my-row-1">
+		<div class="my-row">
 			<div class="my-statics-form">
 				<StatisticanInfoView
 					:minorTitle="GroupStatisticalData.mimor"
@@ -29,24 +29,24 @@
 				<ProductProgressView></ProductProgressView>
 			</div> -->
 		</div>
-		<div class="my-row main-statistics-content my-row-4">
-			<div class="main-element-flow my-col-4"><ElementFlowView></ElementFlowView></div>
-			<div class="main-institutional-tree my-col-2">
-				<div class="institutional-col-item">
-					<!-- <InstitutionalTreeView></InstitutionalTreeView> -->
-					<InstitutionalNightingaleView></InstitutionalNightingaleView>
-				</div>
-				<div class="institutional-col-item">
-					<div>
-						<RecentlyHistogranView
-							:nearlyStatisticsList="nearlyStatisticsList"
-						></RecentlyHistogranView>
-					</div>
-					<div><ElementProgressView></ElementProgressView></div>
-				</div>
-			</div>
+		<div class="my-row">
+			<ElementFlowView></ElementFlowView>
 		</div>
-		<div class="my-row my-row-1"></div>
+		<div class="my-row">
+			<InstitutionalTreeView></InstitutionalTreeView>
+		</div>
+		<div class="my-row height-2">
+			<RecentlyHistogranView
+				:nearlyStatisticsList="nearlyStatisticsList"
+			></RecentlyHistogranView>
+		</div>
+		<div class="my-row height-2" :key="step.key" v-for="step in groupStepList">
+			<StepView
+				:groupName="step.name"
+				:activedStepIndex="step.index"
+				:stepList="step.stepList"
+			></StepView>
+		</div>
 	</div>
 </template>
 <script lang="ts">
@@ -60,8 +60,6 @@ import ElementFlowView from '@/components/ElementFlowView.vue'
 // import StatisticanInfoView from '@/components/StatisticanInfoView.vue'
 import StatisticanInfoView from '@/components/StatisticaInfoView.vue'
 import InstitutionalTreeView from '@/components/InstitutionalTreeView.vue'
-import InstitutionalNightingaleView from '@/components/InstitutionalNightingaleView.vue'
-import ElementProgressView from '@/components/ElementProgressView.vue'
 // api
 import {
 	getTaskByGroup,
@@ -87,8 +85,6 @@ interface IInfo {
 		StatisticanInfoView,
 		ElementFlowView,
 		InstitutionalTreeView,
-		InstitutionalNightingaleView,
-		ElementProgressView,
 	},
 })
 export default class MainView extends Vue {
@@ -318,74 +314,10 @@ export default class MainView extends Vue {
 	right: 0px;
 	height: 100%;
 	align-items: center;
-	.main-statistics-content {
-		// height: 100%;
-		.main-element-flow {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			height: 100%;
-		}
-		.main-institutional-tree {
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-			.institutional-col-item {
-				flex-grow: 1;
-				background: #1243445e;
-				display: flex;
-				flex-direction: row;
-				justify-content: center;
-				align-content: center;
-				align-items: center;
-				div {
-					height: 95%;
-				}
-			}
-			// .institutional-col-item :nth-child(2) {
-
-			// }
-		}
-		.main-institutional-tree > .institutional-col-item:nth-child(2) {
-			// background: green;
-			display: flex;
-
-			div {
-				flex-grow: 1;
-				// background: red;
-				// height: 100%;
-				width: 100%;
-				height: 270px;
-				background: #3b76a15e;
-				margin: 10px;
-			}
-		}
-	}
-}
-.my-row-1 {
-	flex-grow: 1;
-	// height: 100%;
-}
-.my-row-4 {
-	flex-grow: 3;
-}
-.my-col-4 {
-	flex-grow: 4;
-}
-.my-col-1 {
-	flex-grow: 1;
-}
-.my-col-2 {
-	flex-grow: 2;
-}
-.main-statistics-content {
-	display: flex;
 }
 .my-row {
 	background: #0a3d625e;
 	width: 80%;
-	// height: 100%;
 	margin: 10px;
 	display: flex;
 	// height: 20%;

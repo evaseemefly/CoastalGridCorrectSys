@@ -1,7 +1,7 @@
 <template>
 	<div class="statistican-info">
 		<div class="my-minor-tile">{{ minorTitle }}</div>
-		<div class="my-primay-title">{{ primayTile }}</div>
+		<div class="my-primay-title" :style="{ color: primayColor }">{{ primayTile }}</div>
 	</div>
 </template>
 <script lang="ts">
@@ -12,6 +12,8 @@ export default class StatisticanInfoView extends Vue {
 	minorTitle: string
 	@Prop(String)
 	primayTile: string
+	@Prop(String)
+	primayColor: string
 }
 </script>
 <style scoped lang="less">
@@ -25,6 +27,7 @@ export default class StatisticanInfoView extends Vue {
 	.my-minor-tile {
 		flex-grow: 2;
 		color: white;
+		margin: 5px;
 	}
 	.my-primay-title {
 		flex-grow: 8;

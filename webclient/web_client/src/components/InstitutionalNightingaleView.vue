@@ -65,8 +65,6 @@ export default class InstitutionalNightingaleView extends Vue {
 		}
 
 		option && myChart.setOption(option)
-
-		option && myChart.setOption(option)
 	}
 }
 </script>

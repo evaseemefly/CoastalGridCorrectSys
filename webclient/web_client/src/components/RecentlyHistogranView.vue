@@ -74,7 +74,8 @@ export default class RecentlyHistogranView extends Vue {
 					},
 				],
 				// lineStyle: { color: '#f6b93b' },
-				lineStyle: { color: 'rgb(44, 221, 212)' },
+				lineStyle: { color: '#78db1b' },
+				// lineStyle: { color: 'rgb(44, 221, 212)' },
 			}
 			// const option = {
 			// 	tooltip: {

@@ -5,7 +5,7 @@
 			type="circle"
 			:percentage="70"
 			status="warning"
-			color="rgb(44, 221, 212)"
+			color="#78db1b"
 		></el-progress>
 	</div>
 </template>

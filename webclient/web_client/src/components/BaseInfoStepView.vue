@@ -46,11 +46,13 @@ export default class BaseInfoStepView extends Vue {
 
 		// margin: 10px;
 		font-size: 16px;
-        font-weight: 600;
+		font-weight: 600;
 		display: flex;
 		justify-content: flex-start;
 		margin-top: 3px;
 		margin-bottom: 5px;
+
+		text-shadow: 2px 2px 3px #212020;
 	}
 	.base-info-body {
 		display: flex;
@@ -61,7 +63,6 @@ export default class BaseInfoStepView extends Vue {
 			display: flex;
 			justify-content: flex-start;
 			font-size: 15px;
-            
 		}
 		.body-sub-content {
 			display: flex;
@@ -77,6 +78,8 @@ export default class BaseInfoStepView extends Vue {
 				font-weight: 600;
 				margin-top: 5px;
 				margin-bottom: 5px;
+
+				text-shadow: 2px 2px 3px #212020;
 			}
 			.sub-content-footer {
 				color: white;

@@ -4,6 +4,7 @@
 		<div class="flow-row national-flow">
 			<div class="flow-item suited">
 				<div class="flow-item-title">国家中心</div>
+				<div class="flow-item-subtitle">国家级指导产品</div>
 				<div class="flow-item-content">
 					<div class="item-state">
 						<el-switch
@@ -23,6 +24,7 @@
 			<div class="flow-item un-suited">省台A</div>
 			<div class="flow-item suited">
 				<div class="flow-item-title">省台A</div>
+				<div class="flow-item-subtitle">省级订正后产品</div>
 				<div class="flow-item-content">
 					<div class="item-state">
 						<el-switch
@@ -43,6 +45,7 @@
 			<div class="flow-item un-suited">北海区</div>
 			<div class="flow-item suited">
 				<div class="flow-item-title">东海区</div>
+				<div class="flow-item-subtitle">省级订正后产品</div>
 				<div class="flow-item-content">
 					<div class="item-state">
 						<el-switch
@@ -62,6 +65,7 @@
 			<div class="flow-item un-suited">北海区</div>
 			<div class="flow-item suited">
 				<div class="flow-item-title">东海区</div>
+				<div class="flow-item-subtitle">省级订正后产品</div>
 				<div class="flow-item-content">
 					<div class="item-state">
 						<el-switch
@@ -80,6 +84,7 @@
 		<div class="flow-row national-flow">
 			<div class="flow-item suited">
 				<div class="flow-item-title">国家中心</div>
+				<div class="flow-item-subtitle">省级订正后产品</div>
 				<div class="flow-item-content">
 					<div class="item-state">
 						<el-switch
@@ -95,8 +100,9 @@
 		</div>
 		<!-- L5：国家中心人机交互订正后产品 -->
 		<div class="flow-row national-flow">
-			<div class="flow-item un-suited">
+			<div class="flow-item check-out">
 				<div class="flow-item-title">国家中心</div>
+				<div class="flow-item-subtitle">省级订正后产品</div>
 				<div class="flow-item-content">
 					<div class="item-state">
 						<el-switch
@@ -106,7 +112,7 @@
 						>
 						</el-switch>
 					</div>
-					<div class="item-desc">上传完成</div>
+					<div class="item-desc">未完成</div>
 				</div>
 			</div>
 		</div>
@@ -148,6 +154,11 @@ export default class ElementFlowView extends Vue {
 		.flow-item-title {
 			flex-grow: 1;
 		}
+		.flow-item-subtitle {
+			flex-grow: 1;
+			font-size: 13px;
+			color: #797777;
+		}
 		.flow-item-content {
 			flex-grow: 4;
 			justify-content: space-around;
@@ -165,6 +176,10 @@ export default class ElementFlowView extends Vue {
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
+				color: white;
+				text-shadow: 2px 2px 3px #212020;
+				font-size: 18px;
+				font-weight: 600;
 			}
 		}
 	}
@@ -194,15 +209,16 @@ export default class ElementFlowView extends Vue {
 	}
 }
 .element-flow-list-container {
-	.national-flow {
+	.flow-row {
 		.flow-item.suited {
-			background: #43d4cf;
+			background: #78db1b;
+			
 		}
-		.flow-item.un-suited {
-			background: #457e10b5;
+		.flow-item.check-out{
+			background: #f7b731;
 		}
 	}
-	.province-flow {
+	.flow-item.suited {
 		.flow-item.suited {
 			background: #78db1b;
 		}
@@ -210,18 +226,32 @@ export default class ElementFlowView extends Vue {
 			background: #457e10b5;
 		}
 	}
-	.region-flow {
-		.flow-item.suited {
-			background: #ffce2d;
-		}
-		.flow-item.un-suited {
-			background: #457e10b5;
-		}
+	.flow-item.un-suited {
+		background: #457e10b5;
 	}
-	// .region-flow{
-	//     .div{
-	//         background:#3c6382 ;
-	//     }
+	// .national-flow {
+	// 	.flow-item.suited {
+	// 		background: #43d4cf;
+	// 	}
+	// 	.flow-item.un-suited {
+	// 		background: #457e10b5;
+	// 	}
+	// }
+	// .province-flow {
+	// 	.flow-item.suited {
+	// 		background: #78db1b;
+	// 	}
+	// 	.flow-item.un-suited {
+	// 		background: #457e10b5;
+	// 	}
+	// }
+	// .region-flow {
+	// 	.flow-item.suited {
+	// 		background: #ffce2d;
+	// 	}
+	// 	.flow-item.un-suited {
+	// 		background: #457e10b5;
+	// 	}
 	// }
 }
 </style>

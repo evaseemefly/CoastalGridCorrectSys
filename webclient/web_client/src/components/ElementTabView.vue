@@ -49,10 +49,11 @@ export default class ElementTabView extends Vue {
 		cursor: pointer;
 	}
 	.selected {
-		background: rgb(246, 185, 59);
+		// background: rgb(246, 185, 59);
+		background: #f7b731;
 	}
 	.unselected {
-		background: rgba(204, 164, 85, 0.699);
+		background: #0a3d62;
 	}
 }
 </style>

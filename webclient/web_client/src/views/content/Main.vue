@@ -251,21 +251,26 @@ export default class MainView extends Vue {
 	GroupStatisticalData: IInfo = {
 		mimor: '机构数量',
 		primay: '0',
-		primayColor: '#f6b93b',
+		// primayColor: '#f6b93b',
+		primayColor: '#78db1b',
 	}
 
 	// 产品数量
 	ProductStatisticalData: IInfo = {
 		mimor: '产品数量',
 		primay: '5',
-		primayColor: '#e55039',
+		// primayColor: '#e55039',
+		primayColor: '#78db1b',
+		// primayColor: '#f6b93b',
 	}
 
 	// 产品种类数量
 	ProductTypeStatisticalData: IInfo = {
 		mimor: '产品种类数量',
 		primay: '0',
-		primayColor: '#6a89cc',
+		// primayColor: '#6a89cc',
+		primayColor: '#78db1b',
+		// primayColor: '#f6b93b',
 	}
 
 	// 文件总数
@@ -273,13 +278,16 @@ export default class MainView extends Vue {
 		mimor: '文件总数',
 		primay: '21',
 		primayColor: '#82ccdd',
+		// primayColor: '#f6b93b',
 	}
 
 	// 当日文件总数
 	DailyStatisticalData: IInfo = {
 		mimor: '当日文件总数',
 		primay: '0',
-		primayColor: '#78e08f',
+		// primayColor: '#78e08f',
+		primayColor: '#82ccdd',
+		// primayColor: '#f6b93b',
 	}
 	baseStepList: {
 		headTitle: string
@@ -302,7 +310,7 @@ export default class MainView extends Vue {
 			primaryTitle: '交互订正后产品',
 			subHeader: '完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#43d4cf',
+			borderColor: '#78db1b',
 			titleColor: 'white',
 		},
 		{
@@ -310,15 +318,15 @@ export default class MainView extends Vue {
 			primaryTitle: '订正场融合产品',
 			subHeader: '完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#ffce2d',
+			borderColor: '#78db1b',
 			titleColor: 'white',
 		},
 		{
 			headTitle: '海区级',
-			primaryTitle: '人机交互订正后产品',
+			primaryTitle: '人机订正后产品',
 			subHeader: '未完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#457e10b5',
+			borderColor: '#f6b93b',
 			titleColor: 'white',
 		},
 		{
@@ -331,10 +339,10 @@ export default class MainView extends Vue {
 		},
 		{
 			headTitle: '国家中心',
-			primaryTitle: '人机交互订正后产品',
+			primaryTitle: '人机订正后产品',
 			subHeader: '未完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#457e10b5',
+			borderColor: '#f6b93b',
 			titleColor: 'white',
 		},
 	]
@@ -529,7 +537,7 @@ export default class MainView extends Vue {
 	display: flex;
 	flex: 22;
 	flex-direction: column;
-	background: linear-gradient(rgb(70, 85, 129), rgb(49, 59, 89));
+	background: linear-gradient(#4b6584, rgb(49, 59, 89));
 	position: absolute;
 	left: 0px;
 	right: 0px;
@@ -548,6 +556,9 @@ export default class MainView extends Vue {
 			height: 100%;
 			display: flex;
 			flex-direction: column;
+			margin-right: 20px;
+			border-radius: 10px;
+			overflow: hidden;
 			.institutional-col-item {
 				flex-grow: 1;
 				background: #1243445e;

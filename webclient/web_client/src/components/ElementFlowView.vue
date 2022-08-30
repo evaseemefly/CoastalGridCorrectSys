@@ -120,8 +120,8 @@ export default class ElementFlowView extends Vue {
 	/** 要素名称 */
 	elementTitle = '要素A'
 	flowState = false
-    checked=true
-    unChecked=false
+	checked = true
+	unChecked = false
 	mydata: any = null
 }
 </script>
@@ -130,7 +130,7 @@ export default class ElementFlowView extends Vue {
 	display: flex;
 	height: 90%;
 	width: 90%;
-    margin: 10px;
+	margin: 10px;
 	.flow-row {
 		height: 100%;
 		width: 15%;
@@ -138,7 +138,7 @@ export default class ElementFlowView extends Vue {
 		margin-right: 10px;
 		display: flex;
 		flex-direction: column;
-        border-radius: 5px;
+		border-radius: 5px;
 	}
 	.flow-item {
 		flex-grow: 1;
@@ -195,26 +195,26 @@ export default class ElementFlowView extends Vue {
 }
 .element-flow-list-container {
 	.national-flow {
-		.flow-item.suited{
-			background: #78db1b;
+		.flow-item.suited {
+			background: #43d4cf;
 		}
 		.flow-item.un-suited {
 			background: #457e10b5;
 		}
 	}
 	.province-flow {
-		.flow-item.suited{
-			background: #43d4cf;
+		.flow-item.suited {
+			background: #78db1b;
 		}
-        .flow-item.un-suited {
+		.flow-item.un-suited {
 			background: #457e10b5;
 		}
 	}
 	.region-flow {
-		.flow-item.suited{
+		.flow-item.suited {
 			background: #ffce2d;
 		}
-        .flow-item.un-suited {
+		.flow-item.un-suited {
 			background: #457e10b5;
 		}
 	}

@@ -73,7 +73,8 @@ export default class RecentlyHistogranView extends Vue {
 						data: that.fileCountList,
 					},
 				],
-				lineStyle: { color: '#f6b93b' },
+				// lineStyle: { color: '#f6b93b' },
+				lineStyle: { color: 'rgb(44, 221, 212)' },
 			}
 			// const option = {
 			// 	tooltip: {

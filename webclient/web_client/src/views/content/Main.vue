@@ -81,7 +81,12 @@
 								:nearlyStatisticsList="nearlyStatisticsList"
 							></RecentlyHistogranView>
 						</div>
-						<div><ElementProgressView></ElementProgressView></div>
+						<div>
+							<ElementProgressView
+								:elementName="selectedElementName"
+								:elementType="selectedElementCode"
+							></ElementProgressView>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -234,6 +239,8 @@ export default class MainView extends Vue {
 	]
 
 	selectedElementCode: ElementTypeEnum = ElementTypeEnum.SSW
+
+	selectedElementName = '未选择'
 
 	nowDt: Date = new Date()
 
@@ -505,6 +512,16 @@ export default class MainView extends Vue {
 	onNowDt(val: Date): void {
 		this.currentForecastDt = this.convertNow2ForecastDt(val)
 	}
+
+	@Watch('selectedElementCode')
+	onSelectedEleCode(code: ElementTypeEnum): void {
+		const query = this.elementTypes.filter((temp) => {
+			return temp.code === code
+		})
+		if (query.length > 0) {
+			this.selectedElementName = query[0].name
+		}
+	}
 }
 </script>
 <style scoped lang="less">
@@ -557,7 +574,7 @@ export default class MainView extends Vue {
 				// height: 100%;
 				width: 100%;
 				height: 270px;
-				background: #3b76a15e;
+				// background: #3b76a15e;
 				margin: 10px;
 			}
 		}

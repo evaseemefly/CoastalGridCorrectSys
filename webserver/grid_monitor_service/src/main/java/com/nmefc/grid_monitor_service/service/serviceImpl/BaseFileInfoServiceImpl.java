@@ -16,6 +16,7 @@ import com.nmefc.grid_monitor_service.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -201,9 +202,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
 
         //1.获取当日文件总数
         // 当前系统时间转成UTC时间
-        SimpleDateFormat queueDateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String now = queueDateFormat.format(queueDate);
-        Date UTCNow = TimeUtil.localToUTC(now);
+        Date UTCNow = TimeUtil.convertToUTC(queueDate);
         Date startTime;
         Date endTime;
         List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
@@ -227,7 +226,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         //2. 获取当日文件总大小
         Double sum = baseFileInfoList.stream().mapToDouble(BaseFileInfo::getSize).sum();
         //换算为GB单位
-        sum = sum/1000000000;
+        sum = sum/1073741824;
         DecimalFormat df = new DecimalFormat("##########.##");
 //        String.format("%,.2f",num);
         String size = df.format(sum) + " GB";
@@ -266,6 +265,57 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
             fileInfoList.add(todayFile);
         }
         return fileInfoList;
+    }
+
+    @Override
+    public List<WatchFileInfo> WatchList() {
+        List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
+        List<WatchFileInfo> watchFileInfoList = new ArrayList<>();
+        Date date = new Date();
+        //1.转换为UTC时间
+        Date UTCnow = TimeUtil.convertToUTC(date);
+        //2. 获取当前UTC时间前一天的时间作为起始时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(UTCnow);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
+        Date startDate = calendar.getTime();
+        BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
+        BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
+//        System.out.println(startDate);
+//        System.out.println(UTCnow);
+        //降序
+        baseFileInfoExample.setOrderByClause("update_time desc");
+        SimpleDateFormat sdfutc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        //时间在传入时间前24小时的数据
+        criteria.andUpdateTimeBetween(startDate,UTCnow);
+        //3.查询符合要求的结果，并封装返回对象
+        baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
+        //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
+        baseFileInfoList = baseFileInfoList.stream().collect(Collectors
+                .collectingAndThen(
+                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
+                        ArrayList::new));
+        for(BaseFileInfo item : baseFileInfoList){
+            //文件大小转换为MB
+            BigDecimal b = new BigDecimal(String.valueOf(item.getSize()));
+            Double size = b.doubleValue()/1048576;
+            //保留2位小数
+            String str = String.format("%.2f",size);
+            size = Double.parseDouble(str);
+//            System.out.println(item.getUpdateTime());
+            String utcTime = sdfutc.format(item.getUpdateTime());
+//            System.out.println(utcTime);
+            watchFileInfoList.add(new WatchFileInfo(item.getFileName(),utcTime,size));
+
+        }
+        //4.按照上传时间排序
+        Collections.sort(watchFileInfoList, new Comparator<WatchFileInfo>() {
+            public int compare(WatchFileInfo arg0, WatchFileInfo arg1) {
+                return arg1.getGmt_update().compareTo(arg0.getGmt_update());
+            }
+        });
+
+        return watchFileInfoList;
     }
 
     /**
@@ -337,5 +387,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         }
         return processFactory.Manufacture().getLevel_list();
     }
+
+
 
 }

@@ -108,7 +108,18 @@ public class TimeUtil {
         return calendar.getTime();
 
     }
-
+    /**
+     *@Description: 北京时间转成UTC时间
+     *@Param: [queueDate]
+     *@Return: java.util.Date
+     *@Author: QuYuan
+     *@Date: 2022/8/30 13:28
+     */
+    public static Date convertToUTC(Date queueDate){
+        SimpleDateFormat queueDateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now = queueDateFormat.format(queueDate);
+        return TimeUtil.localToUTC(now);
+    }
 
     private TimeUtil() {
     }

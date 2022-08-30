@@ -1,76 +1,107 @@
 <template>
 	<div class="main-content">
 		<div class="my-row my-row-1">
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="GroupStatisticalData.mimor"
-					:primayTile="GroupStatisticalData.primay"
-					:primayColor="GroupStatisticalData.primayColor"
-				></StatisticanInfoView>
+			<div class="my-row-title">
+				主要统计信息<el-date-picker
+					id="el_data_picker"
+					v-model="currentForecastDt"
+					size="mini"
+					type="datetime"
+					placeholder="预报时间"
+					format="yyyy-MM-dd HH"
+					selectableRange="['06:00','18:00']"
+				>
+				</el-date-picker>
 			</div>
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="ProductStatisticalData.mimor"
-					:primayTile="ProductStatisticalData.primay"
-					:primayColor="ProductStatisticalData.primayColor"
-				></StatisticanInfoView>
-			</div>
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="ProductTypeStatisticalData.mimor"
-					:primayTile="ProductTypeStatisticalData.primay"
-					:primayColor="ProductTypeStatisticalData.primayColor"
-				></StatisticanInfoView>
-			</div>
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="DailyStatisticalData.mimor"
-					:primayTile="DailyStatisticalData.primay"
-					:primayColor="DailyStatisticalData.primayColor"
-				></StatisticanInfoView>
-			</div>
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="FileStatisticalData.mimor"
-					:primayTile="FileStatisticalData.primay"
-					:primayColor="FileStatisticalData.primayColor"
-				></StatisticanInfoView>
-			</div>
-			<!-- <div class="my-histogran">
+			<div class="my-row-content">
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="FileStatisticalData.mimor"
+						:primayTile="FileStatisticalData.primay"
+						:primayColor="FileStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="DailyStatisticalData.mimor"
+						:primayTile="DailyStatisticalData.primay"
+						:primayColor="DailyStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="GroupStatisticalData.mimor"
+						:primayTile="GroupStatisticalData.primay"
+						:primayColor="GroupStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="ProductStatisticalData.mimor"
+						:primayTile="ProductStatisticalData.primay"
+						:primayColor="ProductStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="ProductTypeStatisticalData.mimor"
+						:primayTile="ProductTypeStatisticalData.primay"
+						:primayColor="ProductTypeStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+
+				<!-- <div class="my-histogran">
 				<ProductProgressView></ProductProgressView>
 			</div> -->
+			</div>
 		</div>
 		<div class="my-row main-statistics-content my-row-4">
-			<div class="main-element-flow my-col-4"><ElementFlowView></ElementFlowView></div>
-			<div class="main-institutional-tree my-col-2">
-				<div class="institutional-col-item">
-					<!-- <InstitutionalTreeView></InstitutionalTreeView> -->
-					<InstitutionalNightingaleView></InstitutionalNightingaleView>
+			<div class="my-row-title">作业流程进度</div>
+			<div class="my-row-content">
+				<div class="main-element-flow my-col-4">
+					<ElementTabView
+						:elementTypes="elementTypes"
+						:selectedElement="selectedElementCode"
+						@childSelectedCode="
+							(val) => {
+								selectedElementCode = val
+							}
+						"
+					></ElementTabView>
+					<ElementFlowView></ElementFlowView>
 				</div>
-				<div class="institutional-col-item">
-					<div>
-						<RecentlyHistogranView
-							:nearlyStatisticsList="nearlyStatisticsList"
-						></RecentlyHistogranView>
+				<div class="main-institutional-tree my-col-2">
+					<div class="institutional-col-item">
+						<!-- <InstitutionalTreeView></InstitutionalTreeView> -->
+						<InstitutionalNightingaleView></InstitutionalNightingaleView>
 					</div>
-					<div><ElementProgressView></ElementProgressView></div>
+					<div class="institutional-col-item">
+						<div>
+							<RecentlyHistogranView
+								:nearlyStatisticsList="nearlyStatisticsList"
+							></RecentlyHistogranView>
+						</div>
+						<div><ElementProgressView></ElementProgressView></div>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="my-row my-row-1 horizontal">
-			<div class="my-col-4 horizontal space-between">
-				<BaseInfoStepView
-					v-for="item in baseStepList"
-					:key="item.key"
-					:headTitle="item.headTitle"
-					:primaryTitle="item.primaryTitle"
-					:subHeader="item.subHeader"
-					:subFooter="item.subFooter"
-					:borderColor="item.borderColor"
-					:titleColor="item.titleColor"
-				>
-				</BaseInfoStepView>
-				<!-- <BaseInfoProgressView
+			<div class="my-row-title">总体流程及文件监听详情</div>
+			<div class="my-row-content">
+				<div class="my-col-4 horizontal space-between">
+					<BaseInfoStepView
+						v-for="item in baseStepList"
+						:key="item.key"
+						:headTitle="item.headTitle"
+						:primaryTitle="item.primaryTitle"
+						:subHeader="item.subHeader"
+						:subFooter="item.subFooter"
+						:borderColor="item.borderColor"
+						:titleColor="item.titleColor"
+					>
+					</BaseInfoStepView>
+					<!-- <BaseInfoProgressView
 					primaryTitle="国家中心"
 					subTitle="完成国家级指导产品"
 					progress="100"
@@ -95,9 +126,10 @@
 					subTitle="等待人机交互订正后产品"
 					progress="0"
 				></BaseInfoProgressView> -->
-			</div>
-			<div class="my-col-2" style="">
-				<LastModifyFieListView primaryTitle="最近文件"></LastModifyFieListView>
+				</div>
+				<div class="my-col-2" style="">
+					<LastModifyFieListView primaryTitle="最近文件"></LastModifyFieListView>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -115,6 +147,7 @@ import StatisticanInfoView from '@/components/StatisticaInfoView.vue'
 import InstitutionalTreeView from '@/components/InstitutionalTreeView.vue'
 import InstitutionalNightingaleView from '@/components/InstitutionalNightingaleView.vue'
 import ElementProgressView from '@/components/ElementProgressView.vue'
+import ElementTabView from '@/components/ElementTabView.vue'
 import BaseInfoProgressView from '@/components/BaseInfoProgressView.vue'
 import BaseInfoStepView from '@/components/BaseInfoStepView.vue'
 import LastModifyFieListView from '@/components/LastModifyFileListView.vue'
@@ -128,7 +161,7 @@ import {
 	getProductDailyInfo,
 } from '@/api'
 // enmu
-import { GroupEnum, StepStateEnum } from '@/enum'
+import { GroupEnum, StepStateEnum, ElementTypeEnum } from '@/enum'
 // common 与 filter
 import { filterStepState } from '@/filter'
 interface IInfo {
@@ -149,6 +182,7 @@ interface IInfo {
 		BaseInfoProgressView,
 		LastModifyFieListView,
 		BaseInfoStepView,
+		ElementTabView,
 	},
 })
 export default class MainView extends Vue {
@@ -175,6 +209,35 @@ export default class MainView extends Vue {
 			// 	],
 			// },
 		]
+
+	elementTypes: { index: number; name: string; code: ElementTypeEnum }[] = [
+		{
+			index: 0,
+			name: '海面风',
+			code: ElementTypeEnum.SSW,
+		},
+		{
+			index: 1,
+			name: '海浪',
+			code: ElementTypeEnum.WAV,
+		},
+		{
+			index: 2,
+			name: '海流',
+			code: ElementTypeEnum.OCU,
+		},
+		{
+			index: 3,
+			name: '海表面温度',
+			code: ElementTypeEnum.SST,
+		},
+	]
+
+	selectedElementCode: ElementTypeEnum = ElementTypeEnum.SSW
+
+	nowDt: Date = new Date()
+
+	currentForecastDt: Date = new Date()
 
 	// 对应四个统计form的统计对象
 	// 机构数量
@@ -221,50 +284,50 @@ export default class MainView extends Vue {
 	}[] = [
 		{
 			headTitle: '国家中心',
-			primaryTitle: '描述信息1',
+			primaryTitle: '国家级指导产品',
 			subHeader: '完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#6a89cc',
+			borderColor: '#78db1b',
 			titleColor: 'white',
 		},
 		{
-			headTitle: '浙江省台',
-			primaryTitle: '描述信息1',
+			headTitle: '省级',
+			primaryTitle: '交互订正后产品',
 			subHeader: '完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#f6b93b',
+			borderColor: '#43d4cf',
 			titleColor: 'white',
 		},
 		{
-			headTitle: '东海预报中心',
-			primaryTitle: '描述信息1',
+			headTitle: '海区级',
+			primaryTitle: '订正场融合产品',
 			subHeader: '完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#e55039',
+			borderColor: '#ffce2d',
 			titleColor: 'white',
 		},
 		{
-			headTitle: '东海预报中心',
-			primaryTitle: '描述信息1',
+			headTitle: '海区级',
+			primaryTitle: '人机交互订正后产品',
 			subHeader: '未完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#883224',
+			borderColor: '#457e10b5',
 			titleColor: 'white',
 		},
 		{
 			headTitle: '国家中心',
-			primaryTitle: '描述信息1',
+			primaryTitle: '三个海区融合产品',
 			subHeader: '完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#079992',
+			borderColor: '#78db1b',
 			titleColor: 'white',
 		},
 		{
 			headTitle: '国家中心',
-			primaryTitle: '描述信息1',
+			primaryTitle: '人机交互订正后产品',
 			subHeader: '未完成',
 			subFooter: '2022-08-29 10:00',
-			borderColor: '#075a56',
+			borderColor: '#457e10b5',
 			titleColor: 'white',
 		},
 	]
@@ -426,6 +489,21 @@ export default class MainView extends Vue {
 			}
 		})
 		this.load7DaysStatisticsList()
+		this.currentForecastDt = this.convertNow2ForecastDt(this.nowDt)
+	}
+	convertNow2ForecastDt(val: Date): Date {
+		const now = val
+		const nowHours = now.getHours()
+		let forecastDt: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0)
+		if (nowHours >= 18) {
+			forecastDt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0)
+		}
+		return forecastDt
+	}
+
+	@Watch('nowDt')
+	onNowDt(val: Date): void {
+		this.currentForecastDt = this.convertNow2ForecastDt(val)
 	}
 }
 </script>
@@ -522,11 +600,28 @@ export default class MainView extends Vue {
 	// height: 100%;
 	margin: 10px;
 	display: flex;
-	// height: 20%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	flex-direction: column;
 	border-radius: 10px;
+	.my-row-title {
+		min-height: 30px;
+		color: white;
+		display: flex;
+		align-content: center;
+		align-items: center;
+		justify-content: space-between;
+		margin-left: 50px;
+		font-size: 20px;
+		font-weight: bold;
+	}
+	.my-row-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+.el-date-editor {
+	width: 150px !important;
+	margin: 5px;
 }
 .my-statics-form {
 	display: flex;

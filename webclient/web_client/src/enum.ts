@@ -8,3 +8,11 @@ export enum StepStateEnum {
 	FAIL = 9002,
 	WAIT = 9003,
 }
+
+export enum ElementTypeEnum {
+	NULL = -1,
+	SSW = 5001,
+	WAV = 5002,
+	OCU = 5003,
+	SST = 5004,
+}

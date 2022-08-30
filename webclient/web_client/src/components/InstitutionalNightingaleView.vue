@@ -54,10 +54,10 @@ export default class InstitutionalNightingaleView extends Vue {
 					},
 					data: [
 						{ value: 40, name: 'L0-国家级指导产品' },
-						{ value: 38, name: 'L1-浙江省人机交互订正后产品' },
+						{ value: 38, name: 'L1-省级人机交互订正后产品' },
 						{ value: 32, name: 'L2-海区内所有省的订正场融合产品' },
 						{ value: 30, name: 'L3-海区级人机交互订正后产品' },
-						{ value: 28, name: 'L4-三个海区融合产品' },
+						{ value: 28, name: 'L4-三海区融合产品' },
 						{ value: 26, name: 'L5-国家中心人机交互订正后产品' },
 					],
 				},

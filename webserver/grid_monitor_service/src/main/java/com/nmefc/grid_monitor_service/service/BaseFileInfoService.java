@@ -1,6 +1,7 @@
 package com.nmefc.grid_monitor_service.service;
 
 import com.nmefc.grid_monitor_service.bean.resultBean.*;
+import org.springframework.lang.Nullable;
 
 import java.util.Date;
 import java.util.List;
@@ -55,4 +56,31 @@ public interface BaseFileInfoService {
      *@Date: 2022/8/17 23:20
      */
     List<FileInfo> getFileInfo(Integer days);
+
+    /**
+     *@Description:获取最新的文件上传内容
+     *@Param: []
+     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.resultBean.WatchFileInfo>
+     *@Author: QuYuan
+     *@Date: 2022/8/30 13:23
+     */
+    List<WatchFileInfo> getWatchList();
+    /**
+     *@Description:获取当前要素信息
+     *@Param: [type, date, targetDate]
+     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.resultBean.ElementInfo>
+     *@Author: QuYuan
+     *@Date: 2022/8/30 17:05
+     */
+    ElementInfo getElementInfo(Integer type, Date date);
+
+    /**
+     *@Description:获取指定要素以及当前时间或指定时间对应预报时刻的状态列表
+     *@Param: [type, date]
+     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.resultBean.ProductLevelInfoDetail>
+     *@Author: QuYuan
+     *@Date: 2022/8/31 13:56
+     */
+    List<ProductLevelInfoDetail> getProductInfoDetailByElement(Integer type, Date date, Integer areaCode);
+
 }

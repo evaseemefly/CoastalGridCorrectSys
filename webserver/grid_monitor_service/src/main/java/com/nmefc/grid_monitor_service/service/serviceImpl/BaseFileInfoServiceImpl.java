@@ -37,23 +37,23 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
 
         List<ProductInfo> productInfoList = new ArrayList<>();
         List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
-        try{
+        try {
             baseFileInfoList = baseFileInfoMapper.getAllElements();
-        }catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
         List<DictBase> dictBaseList = new ArrayList<>();
         DictBaseExample dictBaseExample = new DictBaseExample();
         try {
             dictBaseList = dictBaseMapper.selectByExample(dictBaseExample);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
-        if (dictBaseList.size()>0 && baseFileInfoList.size()>0){
-            for(BaseFileInfo item : baseFileInfoList){
-                for(DictBase dictItem : dictBaseList){
-                    if (item.getForecastElement().equals(dictItem.getCode())){
-                        ProductInfo productInfo = new ProductInfo(item.getForecastElement(),dictItem.getRemarks());
+        if (dictBaseList.size() > 0 && baseFileInfoList.size() > 0) {
+            for (BaseFileInfo item : baseFileInfoList) {
+                for (DictBase dictItem : dictBaseList) {
+                    if (item.getForecastElement().equals(dictItem.getCode())) {
+                        ProductInfo productInfo = new ProductInfo(item.getForecastElement(), dictItem.getRemarks());
                         productInfoList.add(productInfo);
                     }
                 }
@@ -67,23 +67,23 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
     public List<GroupInfo> getGroupInfo() {
         List<GroupInfo> groupInfoList = new ArrayList<>();
         List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
-        try{
+        try {
             baseFileInfoList = baseFileInfoMapper.getAllGroups();
-        }catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
         List<DictBase> dictBaseList = new ArrayList<>();
         DictBaseExample dictBaseExample = new DictBaseExample();
         try {
             dictBaseList = dictBaseMapper.selectByExample(dictBaseExample);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
-        if (dictBaseList.size()>0 && baseFileInfoList.size()>0){
-            for(BaseFileInfo item : baseFileInfoList){
-                for(DictBase dictItem : dictBaseList){
-                    if (item.getIssurerId().equals(dictItem.getCode())){
-                        GroupInfo groupInfo = new GroupInfo(item.getIssurerId(),dictItem.getRemarks());
+        if (dictBaseList.size() > 0 && baseFileInfoList.size() > 0) {
+            for (BaseFileInfo item : baseFileInfoList) {
+                for (DictBase dictItem : dictBaseList) {
+                    if (item.getIssurerId().equals(dictItem.getCode())) {
+                        GroupInfo groupInfo = new GroupInfo(item.getIssurerId(), dictItem.getRemarks());
                         groupInfoList.add(groupInfo);
                     }
                 }
@@ -107,7 +107,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
         Date startDate = calendar.getTime();
 
-        for(Integer code : groupCodeList){
+        for (Integer code : groupCodeList) {
             //3. 判断此时获取的机构是第几级预报机构
             DictBase dictBase = dictBaseList.stream().filter((item) -> item.getCode().equals(code)).findFirst().get();
             Integer pid = dictBase.getPid();
@@ -119,40 +119,39 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
             List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
 
             BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
-            BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
+            BaseFileInfoExample.Criteria criteria = baseFileInfoExample.createCriteria();
 //            System.out.println(startDate);
 //            System.out.println(date);
 
             //检索机构ID等于传入的ID，并且时间在传入时间前24小时的数据
-            criteria.andIssurerIdEqualTo(code).andForecastTimeBetween(startDate,date);
-            try{
+            criteria.andIssurerIdEqualTo(code).andForecastTimeBetween(startDate, date);
+            try {
                 baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
                 //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
                 baseFileInfoList = baseFileInfoList.stream().collect(Collectors
                         .collectingAndThen(
                                 Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
                                 ArrayList::new));
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw e;
             }
 
 
-
             //4.数据处理:按照产品流程进行拆分。各个流程执行以下
-            if(baseFileInfoList.size()>0) {
+            if (baseFileInfoList.size() > 0) {
                 //4.1 按照流程拆分
                 Map<Integer, List<BaseFileInfo>> groupByLevelList = baseFileInfoList.stream().collect(Collectors.groupingBy(BaseFileInfo::getLevel));
 
                 //4.2遍历每一个流程环节
 
-                for(StepInfo stepInfo:step_list){
+                for (StepInfo stepInfo : step_list) {
                     //4.3 判断流程内，要素是否全
-                    Integer index  = Integer.parseInt(level_list[stepInfo.getStep_index()-1]);
+                    Integer index = Integer.parseInt(level_list[stepInfo.getStep_index() - 1]);
                     List<BaseFileInfo> StepFileList = new ArrayList<>();
                     StepFileList = groupByLevelList.get(index);
-                    if (null == StepFileList){
+                    if (null == StepFileList) {
                         stepInfo.setStep_state(Integer.parseInt(ProcessEnum.FAIL.getValue()));
-                    }else {
+                    } else {
                         List<String> missElementList = checkElements(StepFileList);
                         if (missElementList.size() > 0) {
                             stepInfo.setStep_state(Integer.parseInt(ProcessEnum.WAIT.getValue()));
@@ -164,11 +163,9 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
 
             }
             //配置返回变量，此时还未录入流程状态信息（step_state)
-            ProcessInfo processInfo = new ProcessInfo(code.toString(),dictBase.getRemarks(),step_list);
+            ProcessInfo processInfo = new ProcessInfo(code.toString(), dictBase.getRemarks(), step_list);
             processInfoList.add(processInfo);
         }
-
-
 
 
         return processInfoList;
@@ -192,11 +189,11 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         //3. 获取产品总数据量
         Double sum = baseFileInfoList.stream().mapToDouble(BaseFileInfo::getSize).sum();
         //换算为GB单位
-        sum = sum/1000000000;
+        sum = sum / 1000000000;
         DecimalFormat df = new DecimalFormat("##########.##");
 //        String.format("%,.2f",num);
         String size = df.format(sum) + " GB";
-        StatisticsMainInfo statisticsMainInfo = new StatisticsMainInfo(groupInfoList.size(),count,sum);
+        StatisticsMainInfo statisticsMainInfo = new StatisticsMainInfo(groupInfoList.size(), count, sum);
         return statisticsMainInfo;
     }
 
@@ -214,8 +211,8 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
             startTime = TimeUtil.getZero(UTCNow);
             endTime = TimeUtil.getEnd(UTCNow);
             BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
-            BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
-            criteria.andForecastTimeBetween(startTime,endTime);
+            BaseFileInfoExample.Criteria criteria = baseFileInfoExample.createCriteria();
+            criteria.andForecastTimeBetween(startTime, endTime);
             baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
             //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
             baseFileInfoList = baseFileInfoList.stream().collect(Collectors
@@ -229,7 +226,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         //2. 获取当日文件总大小
         Double sum = baseFileInfoList.stream().mapToDouble(BaseFileInfo::getSize).sum();
         //换算为GB单位
-        sum = sum/1073741824;
+        sum = sum / 1073741824;
         DecimalFormat df = new DecimalFormat("##########.##");
 //        String.format("%,.2f",num);
         String size = df.format(sum) + " GB";
@@ -240,7 +237,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
                         ArrayList::new));
         Integer typeNum = newBaseFileInfoList.size();
 
-        return new TodayFileInfo(count,sum,typeNum);
+        return new TodayFileInfo(count, sum, typeNum);
     }
 
     @Override
@@ -251,9 +248,9 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         //sf为返回结果时的时间格式，此时不需要时分秒
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         //queueDateFormat为LOCAL时间和UTC时间转换时的时间格式，此时需要时分秒
-        SimpleDateFormat queueDateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat queueDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //获取前N天的
-        for(int index = 0;index < days;index++){
+        for (int index = 0; index < days; index++) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - index);
@@ -264,7 +261,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
             Date UTCStartDateStr = TimeUtil.localToUTC(startDateStr);
             String resultDateStr = sf.format(UTCStartDateStr);
 //            System.out.println(resultDateStr);
-            FileInfo todayFile = new FileInfo(todayFileInfo.getFile_count(),todayFileInfo.getFiles_size(),todayFileInfo.getFile_type_count(),resultDateStr);
+            FileInfo todayFile = new FileInfo(todayFileInfo.getFile_count(), todayFileInfo.getFiles_size(), todayFileInfo.getFile_type_count(), resultDateStr);
             fileInfoList.add(todayFile);
         }
         return fileInfoList;
@@ -277,17 +274,17 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         SimpleDateFormat sdfutc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         List<BaseFileInfo> baseFileInfoList = getLast12HourFileInfo(null);
-        for(BaseFileInfo item : baseFileInfoList){
+        for (BaseFileInfo item : baseFileInfoList) {
             //文件大小转换为MB
             BigDecimal b = new BigDecimal(String.valueOf(item.getSize()));
-            Double size = b.doubleValue()/1048576;
+            Double size = b.doubleValue() / 1048576;
             //保留2位小数
-            String str = String.format("%.2f",size);
+            String str = String.format("%.2f", size);
             size = Double.parseDouble(str);
 //            System.out.println(item.getUpdateTime());
             String utcTime = sdfutc.format(item.getUpdateTime());
 //            System.out.println(utcTime);
-            watchFileInfoList.add(new WatchFileInfo(item.getFileName(),utcTime,size));
+            watchFileInfoList.add(new WatchFileInfo(item.getFileName(), utcTime, size));
 
         }
         //4.按照上传时间排序
@@ -296,6 +293,8 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
                 return arg1.getGmt_update().compareTo(arg0.getGmt_update());
             }
         });
+        // - 22-08-31 此处加入了只截取最后五个文件
+        watchFileInfoList = watchFileInfoList.subList(0, 5);
 
         return watchFileInfoList;
     }
@@ -309,12 +308,12 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         ElementInfo elementInfo;
         //1.获取全部要素的集合
         List<DictBase> dictBaseList = dictBaseMapper.selectByExample(dictBaseExample);
-        if(null == dictBaseList && dictBaseList.size() < 1){
+        if (null == dictBaseList && dictBaseList.size() < 1) {
             return null;
         }
         //2.将要素集合封装进返回对象
         DictBase dictBase = dictBaseList.get(0);
-        elementInfo =  new ElementInfo(dictBase.getCode(),dictBase.getRemarks());
+        elementInfo = new ElementInfo(dictBase.getCode(), dictBase.getRemarks());
 
         //3.查询各个要素的当前完成情况
         //3.1 获取近12H当前要素的文件，去重
@@ -322,15 +321,15 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         List<BaseFileInfo> baseFileInfoList = getLast12HourFileInfoByElement(null, type);
         //4 获取当前要素的总数
         Integer sum;
-            //TODO:[-] 这里暂时写死了
-        if(ElementEnum.ICE.getValue().equals(elementInfo.getElement_type())){
-                sum = ProductSum.getSumIce();
-        }else {
-                sum = ProductSum.getSumAll();
+        //TODO:[-] 这里暂时写死了
+        if (ElementEnum.ICE.getValue().equals(elementInfo.getElement_type())) {
+            sum = ProductSum.getSumIce();
+        } else {
+            sum = ProductSum.getSumAll();
         }
-        Double rate = baseFileInfoList.size()/(double)sum;
-            //保留2位小数
-        String str = String.format("%.2f",rate);
+        Double rate = baseFileInfoList.size() / (double) sum;
+        //保留2位小数
+        String str = String.format("%.2f", rate);
         rate = Double.parseDouble(str);
         elementInfo.setRate(rate);
 
@@ -344,21 +343,19 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         List<ProductLevelInfoDetail> productLevelInfoDetailList = new ArrayList<>();
 
 
-
-
-
         //1.2获取所有产品级别
         ProductLevelCollection productLevelCollection = new ProductLevelCollection();
         //1.3根据当前要素获取最近12H的产品信息,并按照产品级别拆分
         List<BaseFileInfo> baseFileInfoList = getLast12HourFileInfoByElement(date, type);
-        if(null == baseFileInfoList && baseFileInfoList.size() <1){return productLevelInfoDetailList;}
+        if (null == baseFileInfoList && baseFileInfoList.size() < 1) {
+            return productLevelInfoDetailList;
+        }
         Map<Integer, List<BaseFileInfo>> groupByLevelList = baseFileInfoList.stream().collect(Collectors.groupingBy(BaseFileInfo::getLevel));
 
         //1.4根据不同产品级别，和海区id，获取grouplist
-        for(Integer level:productLevelCollection.getElementEnumList()){
+        for (Integer level : productLevelCollection.getElementEnumList()) {
 
             List<BaseFileInfo> targetList = groupByLevelList.get(level);
-
 
 
         }
@@ -367,22 +364,22 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
     }
 
     /**
- *@Description:每个流程中检查文件内要素是否全
- *@Param: [baseFileInfoList]
- *@Return: java.util.List<java.lang.String> 记录缺少的要素
- *@Author: QuYuan
- *@Date: 2022/8/17 11:34
- */
-    private List<String> checkElements(List<BaseFileInfo> baseFileInfoList){
+     * @Description:每个流程中检查文件内要素是否全
+     * @Param: [baseFileInfoList]
+     * @Return: java.util.List<java.lang.String> 记录缺少的要素
+     * @Author: QuYuan
+     * @Date: 2022/8/17 11:34
+     */
+    private List<String> checkElements(List<BaseFileInfo> baseFileInfoList) {
         //1. 建立一个缺失要素的列表
         List<String> missElementList = new ArrayList<>();
 
-        if(null != baseFileInfoList){
-            Map<Integer,List<BaseFileInfo>> groupByLevelList = baseFileInfoList.stream().collect(Collectors.groupingBy(BaseFileInfo::getForecastElement));
+        if (null != baseFileInfoList) {
+            Map<Integer, List<BaseFileInfo>> groupByLevelList = baseFileInfoList.stream().collect(Collectors.groupingBy(BaseFileInfo::getForecastElement));
             //2. 使用要素集合判断是否要素全
             ElementCollection elementCollection = new ElementCollection();
-            for(ElementEnum e : elementCollection.getElementEnumList()){
-                if(null == groupByLevelList.get(Integer.parseInt(e.getValue()))){
+            for (ElementEnum e : elementCollection.getElementEnumList()) {
+                if (null == groupByLevelList.get(Integer.parseInt(e.getValue()))) {
                     //将缺失的要素写入list
                     missElementList.add(e.getValue());
                 }
@@ -390,22 +387,23 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         }
         return missElementList;
     }
+
     /**
-     *@Description:根据预报机构的级别，获取对应的流程配置
-     *@Param: [pid]
-     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.middleBean.StepInfo>
-     *@Author: QuYuan
-     *@Date: 2022/8/17 9:34
+     * @Description:根据预报机构的级别，获取对应的流程配置
+     * @Param: [pid]
+     * @Return: java.util.List<com.nmefc.grid_monitor_service.bean.middleBean.StepInfo>
+     * @Author: QuYuan
+     * @Date: 2022/8/17 9:34
      */
-    private List<StepInfo> getStepByPid(Integer pid){
+    private List<StepInfo> getStepByPid(Integer pid) {
         ProcessFactory processFactory;
-        if(pid.equals(0)){
+        if (pid.equals(0)) {
             //1 一级预报机构（国家级）
             processFactory = new NationalProcessFactory();
-        }else if (pid.equals(1001)){
+        } else if (pid.equals(1001)) {
             //2 二级预报机构（海区级）
             processFactory = new RegionalProcessFactory();
-        }else {
+        } else {
             //3 三级预报机构（省级）
             processFactory = new ProvinceProcessFactory();
         }
@@ -415,34 +413,35 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
     }
 
     /**
-     *@Description:根据预报机构的级别，获取对应的流程的文件级别（L0-L5）
-     *@Param: [pid]
-     *@Return: java.lang.String[]
-     *@Author: QuYuan
-     *@Date: 2022/8/17 15:18
+     * @Description:根据预报机构的级别，获取对应的流程的文件级别（L0-L5）
+     * @Param: [pid]
+     * @Return: java.lang.String[]
+     * @Author: QuYuan
+     * @Date: 2022/8/17 15:18
      */
-    private String[] getLevelByPid(Integer pid){
+    private String[] getLevelByPid(Integer pid) {
         ProcessFactory processFactory;
-        if(pid.equals(0)){
+        if (pid.equals(0)) {
             //1 一级预报机构（国家级）
             processFactory = new NationalProcessFactory();
-        }else if (pid.equals(1001)){
+        } else if (pid.equals(1001)) {
             //2 二级预报机构（海区级）
             processFactory = new RegionalProcessFactory();
-        }else {
+        } else {
             //3 三级预报机构（省级）
             processFactory = new ProvinceProcessFactory();
         }
         return processFactory.Manufacture().getLevel_list();
     }
+
     /**
-     *@Description: 根据海区ID，要素ID传回预报机构组织结构（包含产品级别信息）
-     *@Param: [areaID, type]
-     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.resultBean.ProductLevelInfoDetail>
-     *@Author: QuYuan
-     *@Date: 2022/8/31 15:13
+     * @Description: 根据海区ID，要素ID传回预报机构组织结构（包含产品级别信息）
+     * @Param: [areaID, type]
+     * @Return: java.util.List<com.nmefc.grid_monitor_service.bean.resultBean.ProductLevelInfoDetail>
+     * @Author: QuYuan
+     * @Date: 2022/8/31 15:13
      */
-    private List<ProductLevelInfoDetail> initGroupConstructer(Integer areaCode, Integer type, Integer typeCode){
+    private List<ProductLevelInfoDetail> initGroupConstructer(Integer areaCode, Integer type, Integer typeCode) {
         List<ProductLevelInfoDetail> productLevelInfoDetailList = new ArrayList<>();
         //1.获取字典表(包含国家级、所查海区级、所查海区下辖的省级), 后面查询字典不需要再去访问数据库
         DictBaseExample dictBaseExample = new DictBaseExample();
@@ -460,25 +459,25 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         dictBaseExample.setOrderByClause("code asc");
         List<DictBase> dictBaseList = dictBaseMapper.selectByExample(dictBaseExample);
         int index = 0;
-        for(DictBase dictBase:dictBaseList){
-            GroupInfoDetail groupInfoDetail = new GroupInfoDetail(dictBase.getCode(),dictBase.getRemarks(),dictBase.getPid(),index);
+        for (DictBase dictBase : dictBaseList) {
+            GroupInfoDetail groupInfoDetail = new GroupInfoDetail(dictBase.getCode(), dictBase.getRemarks(), dictBase.getPid(), index);
         }
-
 
 
         return null;
 
     }
+
     /**
-     *@Description:获取最近12个小时的文件信息，并去重
-     *@Param: []
-     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.BaseFileInfo>
-     *@Author: QuYuan
-     *@Date: 2022/8/31 9:26
+     * @Description:获取最近12个小时的文件信息，并去重
+     * @Param: []
+     * @Return: java.util.List<com.nmefc.grid_monitor_service.bean.BaseFileInfo>
+     * @Author: QuYuan
+     * @Date: 2022/8/31 9:26
      */
-    private List<BaseFileInfo> getLast12HourFileInfo(@Nullable Date targetDate){
+    private List<BaseFileInfo> getLast12HourFileInfo(@Nullable Date targetDate) {
         Date date = new Date();
-        if (null != targetDate){
+        if (null != targetDate) {
             date = targetDate;
         }
         //1.转换为UTC时间
@@ -487,7 +486,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         //2. 获取当前UTC时间前一天的时间作为起始时间
         Date startDate = TimeUtil.getLast12HourTime(UTCnow);
         BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
-        BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
+        BaseFileInfoExample.Criteria criteria = baseFileInfoExample.createCriteria();
 //        System.out.println(startDate);
 //        System.out.println(UTCnow);
         //降序
@@ -495,7 +494,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
 
         //时间在传入时间前24小时的数据
-        criteria.andUpdateTimeBetween(startDate,UTCnow);
+        criteria.andUpdateTimeBetween(startDate, UTCnow);
         //3.查询符合要求的结果，并封装返回对象
         baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
         //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
@@ -505,17 +504,18 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
                         ArrayList::new));
         return baseFileInfoList;
     }
+
     /**
-     *@Description:根据要素获取最近12个小时的文件信息，并去重
-     *@Param: [targetDate]
-     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.BaseFileInfo>
-     *@Author: QuYuan
-     *@Date: 2022/8/31 14:04
+     * @Description:根据要素获取最近12个小时的文件信息，并去重
+     * @Param: [targetDate]
+     * @Return: java.util.List<com.nmefc.grid_monitor_service.bean.BaseFileInfo>
+     * @Author: QuYuan
+     * @Date: 2022/8/31 14:04
      */
     //TODO:[-]后续和上一个方法合并
-    private List<BaseFileInfo> getLast12HourFileInfoByElement(@Nullable Date targetDate,Integer type){
+    private List<BaseFileInfo> getLast12HourFileInfoByElement(@Nullable Date targetDate, Integer type) {
         Date date = new Date();
-        if (null != targetDate){
+        if (null != targetDate) {
             date = targetDate;
         }
         //1.转换为UTC时间
@@ -524,7 +524,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         //2. 获取当前UTC时间前一天的时间作为起始时间
         Date startDate = TimeUtil.getLast12HourTime(UTCnow);
         BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
-        BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
+        BaseFileInfoExample.Criteria criteria = baseFileInfoExample.createCriteria();
 //        System.out.println(startDate);
 //        System.out.println(UTCnow);
         //降序
@@ -532,7 +532,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
 
         //时间在传入时间前24小时的数据
-        criteria.andUpdateTimeBetween(startDate,UTCnow).andForecastElementEqualTo(type);
+        criteria.andUpdateTimeBetween(startDate, UTCnow).andForecastElementEqualTo(type);
         //3.查询符合要求的结果，并封装返回对象
         baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
         //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）

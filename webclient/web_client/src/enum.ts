@@ -16,3 +16,9 @@ export enum ElementTypeEnum {
 	OCU = 5003,
 	SST = 5004,
 }
+
+export enum StateEnum {
+	NULL = -1,
+	SUITED = 0,
+	UNSUITED = 1,
+}

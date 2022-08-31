@@ -78,6 +78,8 @@ class FileBase:
         val = self.file_name_splice[0]
         dicts = {
             'NMF': IssureEnum.NMF,
+            'PZJ': IssureEnum.PZJ,
+            'REF': IssureEnum.REF
         }
         return dicts.get(val, None)
 
@@ -113,7 +115,9 @@ class FileBase:
         """
         val = self.file_name_splice[3]
         dicts = {
-            'CSDT': ForecastAreaEnum.CSDT
+            'CSDT': ForecastAreaEnum.CSDT,
+            'ZJS': ForecastAreaEnum.ZJS,
+            'DHDT': ForecastAreaEnum.DHDT
         }
         return dicts.get(val, None)
 
@@ -164,7 +168,9 @@ class FileBase:
         val = self.file_name_splice[6]
         dicts = {
             'SSW': ForecastElementEnum.SSW,
-            'WAV': ForecastElementEnum.WAV
+            'WAV': ForecastElementEnum.WAV,
+            'OCU': ForecastElementEnum.OCU,
+            'SST': ForecastElementEnum.SST
         }
         return dicts.get(val, ForecastElementEnum.NULL)
 
@@ -276,15 +282,17 @@ class WatchFileTask(ITask):
                 file_create_ts: float = float(watch_file.get('gmt_created'))
                 file_event_type_str: str = watch_file.get('event_type')
                 file_create_dt_utc: datetime.datetime = arrow.get(file_create_ts).datetime
-
-                file_info = FileBase(file_full_path, file_create_dt_utc, event_type=file_event_type_str)
-                if file_info is not None:
-                    msg = f'now:{datetime.datetime.now()},当前处理文件:{file_info.file_name}'
-                    self.to_store(file_info)
-                else:
-                    msg = f'now:{datetime.datetime.now()},当前无需处理文件'
+                msg = ''
+                try:
+                    file_info = FileBase(file_full_path, file_create_dt_utc, event_type=file_event_type_str)
+                    if file_info is not None:
+                        msg = f'now:{datetime.datetime.now()},当前处理文件:{file_info.file_name}'
+                        self.to_store(file_info)
+                    else:
+                        msg = f'now:{datetime.datetime.now()},当前无需处理文件'
+                except Exception as e:
+                    msg = f'处理{file_full_path}时出错,错误代码:{e.args}'
                 print(msg)
-
         pass
 
     def get_cache_file(self) -> dict:

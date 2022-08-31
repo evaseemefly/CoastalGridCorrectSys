@@ -124,6 +124,13 @@ def inotify_producer():
     notifier = pyinotify.Notifier(watchManager)
     # In this case you must give the class object (ProcessTransientFile)
     # as last parameter not a class instance.
-    watchManager.watch_transient_file('/opt/grid/data/MarineFCST/NMF/china_seas/whole/NMF_BEN_DT_CS_grid',
+    watch_dir = r'/opt/grid/data/MarineFCST'
+    watch_dirs = [r'/opt/grid/data/MarineFCST/NMF/china_seas/whole/NMF_BEN_DT_CS_grid',
+                  r'/opt/grid/data/MarineFCST/PZJ/china_seas/ZJS/PZJ_BEN_DT_CS_grid',
+                  r'/opt/grid/data/MarineFCST/REF/china_seas/DHDT/REF_BEN_DT_CS_grid']
+    # for temp_path in watch_dirs:
+    #     watchManager.watch_transient_file(temp_path,
+    #                                       pyinotify.IN_CLOSE_WRITE, ProcessTransientFile)
+    watchManager.watch_transient_file(watch_dir,
                                       pyinotify.IN_CLOSE_WRITE, ProcessTransientFile)
     notifier.loop()

@@ -33,6 +33,9 @@ class ForecastAreaEnum(Enum):
         预报区域
     """
     CSDT = 4001
+    # TODO:[-] 22-08-24 新添加的区域
+    ZJS = 4002   # 浙江省预报区域
+    DHDT = 4003  # 东海预报区域
     NULL = 9999
 
 
@@ -43,6 +46,8 @@ class ForecastElementEnum(Enum):
     """
     SSW = 5001
     WAV = 5002
+    OCU = 5003
+    SST = 5004
     NULL = 9999
 
 

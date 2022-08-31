@@ -1,0 +1,154 @@
+[
+    {
+        "group_code": "1001",
+        "group_name": "国家海洋环境预报中心",
+        "sort": 1,
+
+        "step_list": [
+            {
+                "step_index": 1,
+                "step_name": "指导产品上传",
+                "product_Type": "L0",
+                "step_state": 9003
+            },
+            {
+                "step_index": 2,
+                "step_name": "融合产品上传",
+               "product_Type": "L4",
+
+                "step_state": 9002
+            },
+            {
+                "step_index": 3,
+                "step_name": "订正产品上传",
+               "product_Type": "L5",
+
+                "step_state": 9002
+            }
+        ]
+    },
+    {
+        "group_code": "1002",
+        "group_name": "浙江省台",
+        "sort": 1,
+        "step_list": [
+            {
+                "step_index": 1,
+                "step_name": "订正产品上传",
+                "product_Type": "L1",
+                "step_state": 9002
+            }
+        ]
+    },
+    {
+        "group_code": "1003",
+        "group_name": "东海区台",
+        "sort": 1,
+        "step_list": [
+            {
+                "step_index": 1,
+                "step_name": "融合产品上传",
+                "product_Type": "L2",
+                "step_state": 9002
+            },
+            {
+                "step_index": 2,
+                "step_name": "订正产品上传",
+                "product_Type": "L3",
+
+                "step_state": 9002
+            }
+        ]
+    }
+]
+
+[
+    {
+        "group_code": "1001",
+        "group_name": "国家海洋环境预报中心",
+        "sort": 1,
+        "step_list": [
+            {
+                "step_index": 1,
+                "step_name": "指导产品上传",
+                "product_Type": "L0",
+                "step_state": 9003
+            },
+            {
+                "step_index": 2,
+                "step_name": "融合产品上传",
+               "product_Type": "L4",
+
+                "step_state": 9002
+            },
+            {
+                "step_index": 3,
+                "step_name": "订正产品上传",
+               "product_Type": "L5",
+
+                "step_state": 9002
+            }
+        ]
+        "children":[
+            {
+                "group_code": "1003",
+                "group_name": "东海区台",
+                "sort": 1,
+                "step_list": [
+                    {
+                        "step_index": 1,
+                        "step_name": "融合产品上传",
+                        "product_Type": "L2",
+                        "step_state": 9002
+                    },
+                    {
+                        "step_index": 2,
+                        "step_name": "订正产品上传",
+                        "product_Type": "L3",
+        
+                        "step_state": 9002
+                    }
+                ],
+                "children":[
+                    {
+                        "group_code": "1002",
+                        "group_name": "浙江省台",
+                        "sort": 1,
+                        "step_list": [
+                            {
+                                "step_index": 1,
+                                "step_name": "订正产品上传",
+                                "product_Type": "L1",
+                                "step_state": 9002
+                            }
+                        ]
+                    },
+                ]
+            }
+        ]
+    }
+]
+
+[
+    {
+     'index':0,
+     'product_type':对应的L0-L5级产品,
+     'group_list':[
+       {
+        'group_id':机构id,
+        'pid'":'父级机构id',
+        'group_name':'机构名称',
+        'group_code':编号,
+        'sort':排序编号,
+        'step_state': 步骤状态 完成|未完成
+      },
+     ]
+    }
+]
+
+/element/info
+{
+    'element_type':要素枚举(int),
+    'element_name':'要素名称',
+    'rate':'指定预报时间对应的要素整体进度(目前已制作该要素的机构数量/目前所有需要制作该要素的机构)'    
+}

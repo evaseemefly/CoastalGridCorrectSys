@@ -1,47 +1,142 @@
 <template>
 	<div class="main-content">
-		<div class="my-row">
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="GroupStatisticalData.mimor"
-					:primayTile="GroupStatisticalData.primay"
-				></StatisticanInfoView>
+		<div class="my-row my-row-1">
+			<div class="my-row-title">
+				主要统计信息<el-date-picker
+					id="el_data_picker"
+					v-model="currentForecastDt"
+					size="mini"
+					type="datetime"
+					placeholder="预报时间"
+					format="yyyy-MM-dd HH"
+					selectableRange="['06:00','18:00']"
+				>
+				</el-date-picker>
 			</div>
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="ProductStatisticalData.mimor"
-					:primayTile="ProductStatisticalData.primay"
-				></StatisticanInfoView>
-			</div>
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="ProductTypeStatisticalData.mimor"
-					:primayTile="ProductTypeStatisticalData.primay"
-				></StatisticanInfoView>
-			</div>
-			<div class="my-statics-form">
-				<StatisticanInfoView
-					:minorTitle="DailyStatisticalData.mimor"
-					:primayTile="DailyStatisticalData.primay"
-				></StatisticanInfoView>
-			</div>
-			<!-- <div class="my-histogran">
+			<div class="my-row-content">
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="FileStatisticalData.mimor"
+						:primayTile="FileStatisticalData.primay"
+						:primayColor="FileStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="DailyStatisticalData.mimor"
+						:primayTile="DailyStatisticalData.primay"
+						:primayColor="DailyStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="GroupStatisticalData.mimor"
+						:primayTile="GroupStatisticalData.primay"
+						:primayColor="GroupStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="ProductStatisticalData.mimor"
+						:primayTile="ProductStatisticalData.primay"
+						:primayColor="ProductStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="ProductTypeStatisticalData.mimor"
+						:primayTile="ProductTypeStatisticalData.primay"
+						:primayColor="ProductTypeStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
+
+				<!-- <div class="my-histogran">
 				<ProductProgressView></ProductProgressView>
 			</div> -->
+			</div>
 		</div>
-		<div class="my-row height-2">
-			<RecentlyHistogranView
-				:nearlyStatisticsList="nearlyStatisticsList"
-			></RecentlyHistogranView>
+		<div class="my-row main-statistics-content my-row-4">
+			<div class="my-row-title">作业流程进度</div>
+			<div class="my-row-content">
+				<div class="main-element-flow my-col-4">
+					<ElementTabView
+						:elementTypes="elementTypes"
+						:selectedElement="selectedElementCode"
+						@childSelectedCode="
+							(val) => {
+								selectedElementCode = val
+							}
+						"
+					></ElementTabView>
+					<ElementFlowView></ElementFlowView>
+				</div>
+				<div class="main-institutional-tree my-col-2">
+					<div class="institutional-col-item">
+						<!-- <InstitutionalTreeView></InstitutionalTreeView> -->
+						<InstitutionalNightingaleView></InstitutionalNightingaleView>
+					</div>
+					<div class="institutional-col-item">
+						<div>
+							<RecentlyHistogranView
+								:nearlyStatisticsList="nearlyStatisticsList"
+							></RecentlyHistogranView>
+						</div>
+						<div>
+							<ElementProgressView
+								:elementName="selectedElementName"
+								:elementType="selectedElementCode"
+							></ElementProgressView>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="my-row height-2" :key="step.key" v-for="step in groupStepList">
-			<StepView
-				:groupName="step.name"
-				:activedStepIndex="step.index"
-				:stepList="step.stepList"
-			></StepView>
+		<div class="my-row my-row-1 horizontal">
+			<div class="my-row-title">总体流程及文件监听详情</div>
+			<div class="my-row-content">
+				<div class="my-col-4 horizontal space-between">
+					<BaseInfoStepView
+						v-for="item in baseStepList"
+						:key="item.key"
+						:headTitle="item.headTitle"
+						:primaryTitle="item.primaryTitle"
+						:subHeader="item.subHeader"
+						:subFooter="item.subFooter"
+						:borderColor="item.borderColor"
+						:titleColor="item.titleColor"
+					>
+					</BaseInfoStepView>
+					<!-- <BaseInfoProgressView
+					primaryTitle="国家中心"
+					subTitle="完成国家级指导产品"
+					progress="100"
+				></BaseInfoProgressView>
+				<BaseInfoProgressView
+					primaryTitle="浙江省台"
+					subTitle="订正后产品"
+					progress="100"
+				></BaseInfoProgressView>
+				<BaseInfoProgressView
+					primaryTitle="东海预报中心"
+					subTitle="完成省订正场融合产品"
+					progress="50"
+				></BaseInfoProgressView>
+				<BaseInfoProgressView
+					primaryTitle="国家中心"
+					subTitle="等待三海区融合产品"
+					progress="0"
+				></BaseInfoProgressView>
+				<BaseInfoProgressView
+					primaryTitle="国家中心"
+					subTitle="等待人机交互订正后产品"
+					progress="0"
+				></BaseInfoProgressView> -->
+				</div>
+				<div class="my-col-2" style="">
+					<LastModifyFieListView primaryTitle="最近文件"></LastModifyFieListView>
+				</div>
+			</div>
 		</div>
-		<!-- <div class="my-row height-2"><StepView></StepView></div> -->
 	</div>
 </template>
 <script lang="ts">
@@ -51,8 +146,16 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import RecentlyHistogranView from '@/components/RecentlyHistogranView.vue'
 import StepView from '@/components/StepView.vue'
 import ProductProgressView from '@/components/ProductProgressView.vue'
+import ElementFlowView from '@/components/ElementFlowView.vue'
 // import StatisticanInfoView from '@/components/StatisticanInfoView.vue'
 import StatisticanInfoView from '@/components/StatisticaInfoView.vue'
+import InstitutionalTreeView from '@/components/InstitutionalTreeView.vue'
+import InstitutionalNightingaleView from '@/components/InstitutionalNightingaleView.vue'
+import ElementProgressView from '@/components/ElementProgressView.vue'
+import ElementTabView from '@/components/ElementTabView.vue'
+import BaseInfoProgressView from '@/components/BaseInfoProgressView.vue'
+import BaseInfoStepView from '@/components/BaseInfoStepView.vue'
+import LastModifyFieListView from '@/components/LastModifyFileListView.vue'
 // api
 import {
 	getTaskByGroup,
@@ -63,12 +166,13 @@ import {
 	getProductDailyInfo,
 } from '@/api'
 // enmu
-import { GroupEnum, StepStateEnum } from '@/enum'
+import { GroupEnum, StepStateEnum, ElementTypeEnum } from '@/enum'
 // common 与 filter
 import { filterStepState } from '@/filter'
 interface IInfo {
 	mimor: string
 	primay: string
+	primayColor: string
 }
 @Component({
 	components: {
@@ -76,6 +180,14 @@ interface IInfo {
 		StepView,
 		ProductProgressView,
 		StatisticanInfoView,
+		ElementFlowView,
+		InstitutionalTreeView,
+		InstitutionalNightingaleView,
+		ElementProgressView,
+		BaseInfoProgressView,
+		LastModifyFieListView,
+		BaseInfoStepView,
+		ElementTabView,
 	},
 })
 export default class MainView extends Vue {
@@ -103,39 +215,139 @@ export default class MainView extends Vue {
 			// },
 		]
 
+	elementTypes: { index: number; name: string; code: ElementTypeEnum }[] = [
+		{
+			index: 0,
+			name: '海面风',
+			code: ElementTypeEnum.SSW,
+		},
+		{
+			index: 1,
+			name: '海浪',
+			code: ElementTypeEnum.WAV,
+		},
+		{
+			index: 2,
+			name: '海流',
+			code: ElementTypeEnum.OCU,
+		},
+		{
+			index: 3,
+			name: '海表面温度',
+			code: ElementTypeEnum.SST,
+		},
+	]
+
+	selectedElementCode: ElementTypeEnum = ElementTypeEnum.SSW
+
+	selectedElementName = '未选择'
+
+	nowDt: Date = new Date()
+
+	currentForecastDt: Date = new Date()
+
 	// 对应四个统计form的统计对象
 	// 机构数量
 	GroupStatisticalData: IInfo = {
 		mimor: '机构数量',
 		primay: '0',
+		// primayColor: '#f6b93b',
+		primayColor: '#78db1b',
 	}
 
 	// 产品数量
 	ProductStatisticalData: IInfo = {
 		mimor: '产品数量',
 		primay: '5',
+		// primayColor: '#e55039',
+		primayColor: '#78db1b',
+		// primayColor: '#f6b93b',
 	}
 
 	// 产品种类数量
 	ProductTypeStatisticalData: IInfo = {
 		mimor: '产品种类数量',
 		primay: '0',
+		// primayColor: '#6a89cc',
+		primayColor: '#78db1b',
+		// primayColor: '#f6b93b',
 	}
 
 	// 文件总数
 	FileStatisticalData: IInfo = {
 		mimor: '文件总数',
 		primay: '21',
+		primayColor: '#82ccdd',
+		// primayColor: '#f6b93b',
 	}
 
 	// 当日文件总数
 	DailyStatisticalData: IInfo = {
 		mimor: '当日文件总数',
 		primay: '0',
+		// primayColor: '#78e08f',
+		primayColor: '#82ccdd',
+		// primayColor: '#f6b93b',
 	}
-
-	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = [
+	baseStepList: {
+		headTitle: string
+		primaryTitle: string
+		subHeader: string
+		subFooter: string
+		borderColor: string
+		titleColor: string
+	}[] = [
+		{
+			headTitle: '国家中心',
+			primaryTitle: '国家级指导产品',
+			subHeader: '完成',
+			subFooter: '2022-08-29 10:00',
+			borderColor: '#78db1b',
+			titleColor: 'white',
+		},
+		{
+			headTitle: '省级',
+			primaryTitle: '交互订正后产品',
+			subHeader: '完成',
+			subFooter: '2022-08-29 10:00',
+			borderColor: '#78db1b',
+			titleColor: 'white',
+		},
+		{
+			headTitle: '海区级',
+			primaryTitle: '订正场融合产品',
+			subHeader: '完成',
+			subFooter: '2022-08-29 10:00',
+			borderColor: '#78db1b',
+			titleColor: 'white',
+		},
+		{
+			headTitle: '海区级',
+			primaryTitle: '人机订正后产品',
+			subHeader: '未完成',
+			subFooter: '2022-08-29 10:00',
+			borderColor: '#f6b93b',
+			titleColor: 'white',
+		},
+		{
+			headTitle: '国家中心',
+			primaryTitle: '三个海区融合产品',
+			subHeader: '完成',
+			subFooter: '2022-08-29 10:00',
+			borderColor: '#78db1b',
+			titleColor: 'white',
+		},
+		{
+			headTitle: '国家中心',
+			primaryTitle: '人机订正后产品',
+			subHeader: '未完成',
+			subFooter: '2022-08-29 10:00',
+			borderColor: '#f6b93b',
+			titleColor: 'white',
+		},
 	]
+
+	nearlyStatisticsList: { count: number; size: number; typeCount: number; dt: Date }[] = []
 
 	/** 加载当前全部机构的作业状态 */
 	loadAllGroupTaskStep() {
@@ -292,6 +504,31 @@ export default class MainView extends Vue {
 			}
 		})
 		this.load7DaysStatisticsList()
+		this.currentForecastDt = this.convertNow2ForecastDt(this.nowDt)
+	}
+	convertNow2ForecastDt(val: Date): Date {
+		const now = val
+		const nowHours = now.getHours()
+		let forecastDt: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0)
+		if (nowHours >= 18) {
+			forecastDt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0)
+		}
+		return forecastDt
+	}
+
+	@Watch('nowDt')
+	onNowDt(val: Date): void {
+		this.currentForecastDt = this.convertNow2ForecastDt(val)
+	}
+
+	@Watch('selectedElementCode')
+	onSelectedEleCode(code: ElementTypeEnum): void {
+		const query = this.elementTypes.filter((temp) => {
+			return temp.code === code
+		})
+		if (query.length > 0) {
+			this.selectedElementName = query[0].name
+		}
 	}
 }
 </script>
@@ -300,23 +537,119 @@ export default class MainView extends Vue {
 	display: flex;
 	flex: 22;
 	flex-direction: column;
-	background: linear-gradient(rgb(70, 85, 129), rgb(49, 59, 89));
+	background: linear-gradient(#4b6584, rgb(49, 59, 89));
 	position: absolute;
 	left: 0px;
 	right: 0px;
 	height: 100%;
 	align-items: center;
+	.main-statistics-content {
+		// height: 100%;
+		.main-element-flow {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+		}
+		.main-institutional-tree {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			margin-right: 20px;
+			border-radius: 10px;
+			overflow: hidden;
+			.institutional-col-item {
+				flex-grow: 1;
+				background: #1243445e;
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-content: center;
+				align-items: center;
+				div {
+					height: 95%;
+				}
+			}
+			// .institutional-col-item :nth-child(2) {
+
+			// }
+		}
+		.main-institutional-tree > .institutional-col-item:nth-child(2) {
+			// background: green;
+			display: flex;
+
+			div {
+				flex-grow: 1;
+				// background: red;
+				// height: 100%;
+				width: 100%;
+				height: 270px;
+				// background: #3b76a15e;
+				margin: 10px;
+			}
+		}
+	}
+}
+.horizontal {
+	display: flex;
+	flex-direction: row;
+}
+.my-row-1 {
+	flex-grow: 1;
+	// height: 100%;
+}
+.my-row-4 {
+	flex-grow: 3;
+}
+.my-col-4 {
+	flex-grow: 4;
+}
+.my-col-3 {
+	flex-grow: 3;
+	// width: 100%;
+	// height: 100%;
+}
+.my-col-2 {
+	flex-grow: 2;
+	// width: 100%;
+	// height: 100%;
+}
+.my-col-1 {
+	flex-grow: 1;
+}
+
+.main-statistics-content {
+	display: flex;
 }
 .my-row {
 	background: #0a3d625e;
 	width: 80%;
+	// height: 100%;
 	margin: 10px;
 	display: flex;
-	// height: 20%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	flex-direction: column;
 	border-radius: 10px;
+	.my-row-title {
+		min-height: 30px;
+		color: white;
+		display: flex;
+		align-content: center;
+		align-items: center;
+		justify-content: space-between;
+		margin-left: 50px;
+		font-size: 20px;
+		font-weight: bold;
+	}
+	.my-row-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+.el-date-editor {
+	width: 150px !important;
+	margin: 5px;
 }
 .my-statics-form {
 	display: flex;
@@ -334,5 +667,8 @@ export default class MainView extends Vue {
 }
 .height-2 {
 	height: 20%;
+}
+.space-between {
+	justify-content: space-between !important;
 }
 </style>

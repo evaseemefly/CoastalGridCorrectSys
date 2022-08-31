@@ -298,7 +298,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
             }
         });
         //截取前五个
-        watchFileInfoList.subList(0,5);
+        watchFileInfoList = watchFileInfoList.subList(0,5);
         return watchFileInfoList;
     }
 

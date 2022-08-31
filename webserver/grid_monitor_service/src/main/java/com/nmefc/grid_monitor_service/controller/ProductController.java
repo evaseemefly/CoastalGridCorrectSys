@@ -43,6 +43,6 @@ public class ProductController {
      */
     @GetMapping("/watch/list")
     public List<WatchFileInfo> watchList(){
-        return baseFileInfoService.WatchList();
+        return baseFileInfoService.getWatchList();
     }
 }

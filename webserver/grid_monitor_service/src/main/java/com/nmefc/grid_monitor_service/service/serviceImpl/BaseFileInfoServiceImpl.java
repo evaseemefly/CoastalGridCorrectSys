@@ -9,11 +9,13 @@ import com.nmefc.grid_monitor_service.bean.middleBean.Process;
 import com.nmefc.grid_monitor_service.bean.resultBean.*;
 import com.nmefc.grid_monitor_service.common.ElementEnum;
 import com.nmefc.grid_monitor_service.common.ProcessEnum;
+import com.nmefc.grid_monitor_service.common.ProductSum;
 import com.nmefc.grid_monitor_service.mapper.BaseFileInfoMapper;
 import com.nmefc.grid_monitor_service.mapper.DictBaseMapper;
 import com.nmefc.grid_monitor_service.service.BaseFileInfoService;
 import com.nmefc.grid_monitor_service.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
     BaseFileInfoMapper baseFileInfoMapper;
     @Autowired
     DictBaseMapper dictBaseMapper;
+
     @Override
     public List<ProductInfo> getProductInfo() {
 
@@ -268,33 +271,12 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
     }
 
     @Override
-    public List<WatchFileInfo> WatchList() {
-        List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
+    public List<WatchFileInfo> getWatchList() {
+
         List<WatchFileInfo> watchFileInfoList = new ArrayList<>();
-        Date date = new Date();
-        //1.转换为UTC时间
-        Date UTCnow = TimeUtil.convertToUTC(date);
-        //2. 获取当前UTC时间前一天的时间作为起始时间
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(UTCnow);
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
-        Date startDate = calendar.getTime();
-        BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
-        BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
-//        System.out.println(startDate);
-//        System.out.println(UTCnow);
-        //降序
-        baseFileInfoExample.setOrderByClause("update_time desc");
         SimpleDateFormat sdfutc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        //时间在传入时间前24小时的数据
-        criteria.andUpdateTimeBetween(startDate,UTCnow);
-        //3.查询符合要求的结果，并封装返回对象
-        baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
-        //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
-        baseFileInfoList = baseFileInfoList.stream().collect(Collectors
-                .collectingAndThen(
-                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
-                        ArrayList::new));
+
+        List<BaseFileInfo> baseFileInfoList = getLast12HourFileInfo(null);
         for(BaseFileInfo item : baseFileInfoList){
             //文件大小转换为MB
             BigDecimal b = new BigDecimal(String.valueOf(item.getSize()));
@@ -316,6 +298,67 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         });
 
         return watchFileInfoList;
+    }
+
+    @Override
+    public ElementInfo getElementInfo(Integer type, Date date) {
+        //1.获取字典表, 后面查询字典不需要再去访问数据库
+        DictBaseExample dictBaseExample = new DictBaseExample();
+        DictBaseExample.Criteria criteriaDictBase = dictBaseExample.createCriteria();
+
+        ElementInfo elementInfo;
+
+        criteriaDictBase.andCodeEqualTo(type);
+
+        //1.获取全部要素的集合
+        List<DictBase> dictBaseList = dictBaseMapper.selectByExample(dictBaseExample);
+        if(null == dictBaseList && dictBaseList.size() < 1){
+            return null;
+        }
+        //2.将要素集合封装进返回对象
+        DictBase dictBase = dictBaseList.get(0);
+        elementInfo =  new ElementInfo(dictBase.getCode(),dictBase.getRemarks());
+
+        //3.查询各个要素的当前完成情况
+        //3.1 获取近12H当前要素的文件，去重
+        //1.转换为UTC时间
+
+        //2. 获取当前UTC时间前一天的时间作为起始时间
+        Date startDate = TimeUtil.getLast12HourTime(date);
+        BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
+        BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
+        System.out.println(startDate);
+        System.out.println(date);
+        //降序
+        baseFileInfoExample.setOrderByClause("update_time desc");
+        List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
+
+        //时间在传入时间前24小时的数据
+        criteria.andUpdateTimeBetween(startDate,date).andForecastElementEqualTo(type);
+        //3.查询符合要求的结果，并封装返回对象
+        baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
+        //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
+        baseFileInfoList = baseFileInfoList.stream().collect(Collectors
+                .collectingAndThen(
+                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
+                        ArrayList::new));
+
+        //4 获取当前要素的总数
+        Integer sum;
+            //TODO:[-] 这里暂时写死了
+        if(ElementEnum.ICE.getValue().equals(elementInfo.getElement_type())){
+                sum = ProductSum.getSumIce();
+        }else {
+                sum = ProductSum.getSumAll();
+        }
+        Double rate = baseFileInfoList.size()/(double)sum;
+            //保留2位小数
+        String str = String.format("%.2f",rate);
+        rate = Double.parseDouble(str);
+        elementInfo.setRate(rate);
+
+
+        return elementInfo;
     }
 
     /**
@@ -388,6 +431,41 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         return processFactory.Manufacture().getLevel_list();
     }
 
+    /**
+     *@Description:获取最近12个小时的文件信息，并去重
+     *@Param: []
+     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.BaseFileInfo>
+     *@Author: QuYuan
+     *@Date: 2022/8/31 9:26
+     */
+    private List<BaseFileInfo> getLast12HourFileInfo(@Nullable Date targetDate){
+        Date date = new Date();
+        if (null != targetDate){
+            date = targetDate;
+        }
+        //1.转换为UTC时间
 
+        Date UTCnow = TimeUtil.convertToUTC(date);
+        //2. 获取当前UTC时间前一天的时间作为起始时间
+        Date startDate = TimeUtil.getLast12HourTime(UTCnow);
+        BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
+        BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
+//        System.out.println(startDate);
+//        System.out.println(UTCnow);
+        //降序
+        baseFileInfoExample.setOrderByClause("update_time desc");
+        List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
+
+        //时间在传入时间前24小时的数据
+        criteria.andUpdateTimeBetween(startDate,UTCnow);
+        //3.查询符合要求的结果，并封装返回对象
+        baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
+        //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
+        baseFileInfoList = baseFileInfoList.stream().collect(Collectors
+                .collectingAndThen(
+                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
+                        ArrayList::new));
+        return baseFileInfoList;
+    }
 
 }

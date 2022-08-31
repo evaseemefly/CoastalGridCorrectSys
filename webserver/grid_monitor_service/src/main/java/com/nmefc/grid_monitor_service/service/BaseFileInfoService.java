@@ -73,4 +73,14 @@ public interface BaseFileInfoService {
      *@Date: 2022/8/30 17:05
      */
     ElementInfo getElementInfo(Integer type, Date date);
+
+    /**
+     *@Description:获取指定要素以及当前时间或指定时间对应预报时刻的状态列表
+     *@Param: [type, date]
+     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.resultBean.ProductLevelInfoDetail>
+     *@Author: QuYuan
+     *@Date: 2022/8/31 13:56
+     */
+    List<ProductLevelInfoDetail> getProductInfoDetailByElement(Integer type, Date date, Integer areaCode);
+
 }

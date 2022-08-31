@@ -2,6 +2,8 @@ package com.nmefc.grid_monitor_service.bean.resultBean;
 
 public class GroupInfo {
     private Integer group_code;
+    private String group_name;
+
 
     public GroupInfo(Integer group_code, String group_name) {
         this.group_code = group_code;
@@ -24,5 +26,5 @@ public class GroupInfo {
         this.group_name = group_name;
     }
 
-    private String group_name;
+
 }

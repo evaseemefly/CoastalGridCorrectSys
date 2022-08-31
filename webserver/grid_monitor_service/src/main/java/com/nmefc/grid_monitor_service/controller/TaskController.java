@@ -88,7 +88,7 @@ public class TaskController {
     @GetMapping("/element/info")
     public ElementInfo elementInfo(Integer element_type, String now_dt, @Nullable String target_dt){
         if(null == element_type && null == now_dt){return null;}
-        // TODO:[-] 22-08-20 传入的时间格式为:2022-08-19T10:00:000Z 修改 format 为 .SSS'Z'
+
         SimpleDateFormat fmt1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         Date date = null;
         try {

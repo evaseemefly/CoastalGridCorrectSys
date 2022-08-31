@@ -442,7 +442,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
      *@Author: QuYuan
      *@Date: 2022/8/31 15:13
      */
-    private List<ProductLevelInfoDetail> initGroupConstructer(Integer areaCode, Integer type, Integer typeCode, ProductLevelCollection productLevelCollection){
+    private List<ProductLevelInfoDetail> initGroupConstructer(Integer areaCode, Integer type, Integer typeCode){
         List<ProductLevelInfoDetail> productLevelInfoDetailList = new ArrayList<>();
         //1.获取字典表(包含国家级、所查海区级、所查海区下辖的省级), 后面查询字典不需要再去访问数据库
         DictBaseExample dictBaseExample = new DictBaseExample();
@@ -457,16 +457,15 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
 
         dictBaseExample.or(criteriaNation);
         dictBaseExample.or(criteriaArea);
-
+        dictBaseExample.setOrderByClause("code asc");
         List<DictBase> dictBaseList = dictBaseMapper.selectByExample(dictBaseExample);
-
-
         int index = 0;
-        for(Integer levelCode: productLevelCollection.getElementEnumList()){
-            ProductLevelInfoDetail productLevelInfoDetail = new ProductLevelInfoDetail(index,levelCode);
-//            GroupInfoDetail groupInfoDetail = new GroupInfoDetail()
-            index++;
+        for(DictBase dictBase:dictBaseList){
+            GroupInfoDetail groupInfoDetail = new GroupInfoDetail(dictBase.getCode(),dictBase.getRemarks(),dictBase.getPid(),index);
         }
+
+
+
         return null;
 
     }

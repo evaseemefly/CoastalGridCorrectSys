@@ -1,8 +1,10 @@
 package com.nmefc.grid_monitor_service.bean.resultBean;
 
 public class GroupInfoDetail extends GroupInfo {
-    public GroupInfoDetail(Integer group_code, String group_name) {
+    public GroupInfoDetail(Integer group_code, String group_name,  Integer pid, Integer sort) {
         super(group_code, group_name);
+        this.pid = pid;
+        this.sort = sort;
     }
 
 

@@ -120,10 +120,21 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { ElementTypeEnum } from '@/enum'
 /** 各个要素视图 */
 @Component({})
 export default class ElementFlowView extends Vue {
 	/** 要素名称 */
+	@Prop(String)
+	elementName: string
+	
+	/** 要素枚举类型 */
+	@Prop(Number)
+	elementType: ElementTypeEnum
+
+	@Prop(Date)
+	forecastDt: Date
+
 	elementTitle = '要素A'
 	flowState = false
 	checked = true
@@ -212,9 +223,8 @@ export default class ElementFlowView extends Vue {
 	.flow-row {
 		.flow-item.suited {
 			background: #78db1b;
-			
 		}
-		.flow-item.check-out{
+		.flow-item.check-out {
 			background: #f7b731;
 		}
 	}

@@ -89,6 +89,7 @@
 							<ElementProgressView
 								:elementName="selectedElementName"
 								:elementType="selectedElementCode"
+								:forecastDt="currentForecastDt"
 							></ElementProgressView>
 						</div>
 					</div>

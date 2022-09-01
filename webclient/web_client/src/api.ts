@@ -8,8 +8,8 @@ axios.defaults.withCredentials = true
 // 	// 'Access-Control-Allow-Origin': 'http://121.36.51.94:8080',
 // }
 
-const HOST = 'http://121.36.51.94:8080'
-// const HOST = 'http://localhost:8080'
+// const HOST = 'http://121.36.51.94:8080'
+const HOST = 'http://localhost:8080'
 
 const getTaskByGroup = (parm: { codes: string[]; dt: Date }) => {
 	const area = 'task'
@@ -65,6 +65,28 @@ const getNearlyProductInfo = () => {
 	})
 }
 
+const getLastFileList = () => {
+	const area = 'product'
+	const url = `${HOST}/${area}/watch/list`
+	return axios.get(url, {
+		// headers: authHeader(),
+		params: {},
+	})
+}
+
+const getElmentRate = (elementTyppe: number, nowDt: Date, targetDt?: Date) => {
+	const area = 'task'
+	const url = `${HOST}/${area}/element/info`
+	return axios.get(url, {
+		// headers: authHeader(),
+		params: {
+			element_type: elementTyppe,
+			now_dt: nowDt,
+			target_dt: targetDt ? targetDt : null,
+		},
+	})
+}
+
 export {
 	getTaskByGroup,
 	getGroupCount,
@@ -72,4 +94,6 @@ export {
 	getProductMain,
 	getNearlyProductInfo,
 	getProductDailyInfo,
+	getLastFileList,
+	getElmentRate,
 }

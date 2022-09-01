@@ -1,11 +1,13 @@
 package com.nmefc.grid_monitor_service.controller;
 
+import com.nmefc.grid_monitor_service.bean.resultBean.ElementInfo;
 import com.nmefc.grid_monitor_service.bean.resultBean.GroupInfo;
 import com.nmefc.grid_monitor_service.bean.resultBean.ProcessInfo;
 import com.nmefc.grid_monitor_service.common.TimeEnum;
 import com.nmefc.grid_monitor_service.service.BaseFileInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.datetime.joda.DateTimeParser;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -75,5 +77,36 @@ public class TaskController {
             return null;
         }
         return processInfoList;
+    }
+    /**
+     *@Description:获取指定时间要素的状态列表
+     *@Param: [element_type, now_dt, target_dt]
+     *@Return: com.nmefc.grid_monitor_service.bean.resultBean.ElementInfo
+     *@Author: QuYuan
+     *@Date: 2022/8/31 11:18
+     */
+    @GetMapping("/element/info")
+    public ElementInfo elementInfo(Integer element_type, String now_dt, @Nullable String target_dt){
+        if(null == element_type && null == now_dt){return null;}
+
+        SimpleDateFormat fmt1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Date date = null;
+        try {
+
+            if (null != target_dt){
+                date = fmt1.parse(target_dt);
+
+            }else {
+                date = fmt1.parse(now_dt);
+            }
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return baseFileInfoService.getElementInfo(element_type,date);
+
     }
 }

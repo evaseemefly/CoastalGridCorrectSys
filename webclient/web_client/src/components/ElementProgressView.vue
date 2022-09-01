@@ -3,9 +3,9 @@
 		<div class="progress-title">今日{{ elementName }}作业进度</div>
 		<el-progress
 			type="circle"
-			:percentage="70"
-			status="warning"
-			color="#78db1b"
+			:percentage="rate"
+			:status="status"
+			:color="statusColor"
 		></el-progress>
 	</div>
 </template>
@@ -13,6 +13,8 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 // enmu
 import { ElementTypeEnum } from '@/enum'
+// api
+import { getElmentRate } from '@/api'
 @Component({})
 export default class ElementProgressView extends Vue {
 	@Prop(Number)
@@ -20,6 +22,57 @@ export default class ElementProgressView extends Vue {
 
 	@Prop(String)
 	elementName: string
+
+	@Prop(Date)
+	forecastDt: Date
+
+	rate = 0
+
+	// status = ''
+
+	get watchOpt(): { elementType: ElementTypeEnum; forecastDt: Date } {
+		const { elementType, forecastDt } = this
+
+		return { elementType, forecastDt }
+	}
+
+	@Watch('watchOpt')
+	onEleType(val: { elementType: ElementTypeEnum; forecastDt: Date }): void {
+		// console.log(val)
+		const self = this
+		getElmentRate(val.elementType, new Date(), val.forecastDt).then((res) => {
+			if (res.status === 200) {
+				// console.log(res.data)
+				if (res.data.rate) {
+					self.rate = res.data.rate * 100
+				} else {
+					self.rate = 0
+				}
+			}
+		})
+	}
+
+	get status(): string {
+		let status = ''
+		if (this.rate === 0) {
+			status = 'exception'
+		} else if (this.rate < 50) {
+			status = 'warning'
+		} else if (this.rate === 100) {
+			status = 'success'
+		}
+		return status
+	}
+
+	get statusColor(): string {
+		let color = ''
+		if (this.rate < 50) {
+			color = 'gb(130, 204, 221);'
+		} else if (this.rate === 100) {
+			color = '#78db1b'
+		}
+		return color
+	}
 }
 </script>
 <style scoped lang="less">

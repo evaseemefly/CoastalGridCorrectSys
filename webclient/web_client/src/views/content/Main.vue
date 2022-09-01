@@ -582,6 +582,7 @@ export default class MainView extends Vue {
 		}
 	}
 }
+
 .horizontal {
 	display: flex;
 	flex-direction: row;

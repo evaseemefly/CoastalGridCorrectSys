@@ -38,7 +38,7 @@
 				v-show="group.children.length > 0"
 			>
 				<div
-					class="flow-item"
+					class="flow-item mini-font"
 					:class="[getSuitedCls(child.state)]"
 					v-for="child in group.children"
 					:key="child.key"
@@ -712,6 +712,10 @@ export default class ElementFlowView extends Vue {
 			font-weight: 600;
 		}
 	}
+}
+
+.mini-font{
+	font-size: 15px;
 }
 .suited {
 	flex-grow: 4;

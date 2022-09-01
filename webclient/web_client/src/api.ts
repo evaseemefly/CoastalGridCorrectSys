@@ -8,8 +8,8 @@ axios.defaults.withCredentials = true
 // 	// 'Access-Control-Allow-Origin': 'http://121.36.51.94:8080',
 // }
 
-// const HOST = 'http://121.36.51.94:8080'
-const HOST = 'http://localhost:8080'
+const HOST = 'http://121.36.51.94:8080'
+// const HOST = 'http://localhost:8080'
 
 const getTaskByGroup = (parm: { codes: string[]; dt: Date }) => {
 	const area = 'task'
@@ -87,6 +87,20 @@ const getElmentRate = (elementTyppe: number, nowDt: Date, targetDt?: Date) => {
 	})
 }
 
+const getAreaStep = (elemntType: number, nowDt: Date, searArea: number, targetDt?: Date) => {
+	const area = 'task'
+	const url = `${HOST}/${area}/element/area/step`
+	return axios.get(url, {
+		// headers: authHeader(),
+		params: {
+			elementType: elemntType,
+			now_dt: nowDt,
+			area: searArea,
+			target_dt: targetDt ? targetDt : null,
+		},
+	})
+}
+
 export {
 	getTaskByGroup,
 	getGroupCount,
@@ -96,4 +110,5 @@ export {
 	getProductDailyInfo,
 	getLastFileList,
 	getElmentRate,
+	getAreaStep,
 }

@@ -68,7 +68,11 @@
 							}
 						"
 					></ElementTabView>
-					<ElementFlowView></ElementFlowView>
+					<ElementFlowView
+						:elementName="selectedElementName"
+						:elementType="selectedElementCode"
+						:forecastDt="currentForecastDt"
+					></ElementFlowView>
 				</div>
 				<div class="main-institutional-tree my-col-2">
 					<div class="institutional-col-item">
@@ -198,23 +202,7 @@ export default class MainView extends Vue {
 		stepList: { index: number; name: string; state: number }[]
 	}[] = []
 	groupStepList: { index: number; name: string; stepList: { title: string; desc: string }[] }[] =
-		[
-			// {
-			// 	index: 1,
-			// 	stepList: [
-			// 		{ title: '步骤1', desc: '国家级产生预报产品' },
-			// 		{ title: '步骤2', desc: '融合海区预报产品' },
-			// 		{ title: '步骤3', desc: '国家级订正产品' },
-			// 	],
-			// },
-			// {
-			// 	index: 1,
-			// 	stepList: [
-			// 		{ title: '步骤1', desc: '获取海区级预报产品并切分' },
-			// 		{ title: '步骤2', desc: '产出省级预报产品' },
-			// 	],
-			// },
-		]
+		[]
 
 	elementTypes: { index: number; name: string; code: ElementTypeEnum }[] = [
 		{

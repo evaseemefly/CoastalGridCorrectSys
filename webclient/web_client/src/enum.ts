@@ -17,8 +17,23 @@ export enum ElementTypeEnum {
 	SST = 5004,
 }
 
+export enum ProductLevelEnmu {
+	L0 = 6101,
+	L1 = 6102,
+	L2 = 6103,
+	L3 = 6104,
+	L4 = 6105,
+	L5 = 6106,
+}
+
 export enum StateEnum {
 	NULL = -1,
 	SUITED = 0,
 	UNSUITED = 1,
+}
+
+export enum AreaEnum {
+	NORTH = 1002,
+	EAST = 1003,
+	SOUTH = 1004,
 }

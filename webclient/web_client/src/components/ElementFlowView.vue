@@ -1,6 +1,11 @@
 <template>
 	<div class="element-flow-list-container">
-		<div class="sea-area" v-for="seaArea in seaAreaFlowList" :key="seaArea.key">
+		<div
+			class="sea-area"
+			v-for="seaArea in seaAreaFlowList"
+			:key="seaArea.key"
+			:style="{ order: seaArea.sort }"
+		>
 			<!-- L0 国家级指导产品 -->
 			<div
 				class="flow-row national-flow"
@@ -13,14 +18,14 @@
 					<div class="flow-item-title">{{ group.name }}</div>
 					<div class="flow-item-subtitle">{{ group.desc }}</div>
 					<div class="flow-item-content">
-						<div class="item-state">
+						<!-- <div class="item-state">
 							<el-switch
 								v-model="group.checked"
 								active-color="#1e3799"
 								inactive-color="#b71540"
 							>
 							</el-switch>
-						</div>
+						</div> -->
 						<div class="item-desc">{{ getSuitedVal(group.state) }}</div>
 					</div>
 				</div>
@@ -85,6 +90,31 @@ const getGroupName = (level: ProductLevelEnmu): string => {
 			break
 		case ProductLevelEnmu.L5:
 			name = '国家中心'
+			break
+	}
+	return name
+}
+
+const getGroupDesc = (level: ProductLevelEnmu): string => {
+	let name = ''
+	switch (level) {
+		case ProductLevelEnmu.L0:
+			name = '国家指导产品'
+			break
+		case ProductLevelEnmu.L1:
+			name = ''
+			break
+		case ProductLevelEnmu.L2:
+			name = '订正融合产品'
+			break
+		case ProductLevelEnmu.L3:
+			name = '人机订正产品'
+			break
+		case ProductLevelEnmu.L4:
+			name = '融合产品'
+			break
+		case ProductLevelEnmu.L5:
+			name = '人机订正产品'
 			break
 	}
 	return name
@@ -157,32 +187,58 @@ export default class ElementFlowView extends Vue {
 		const self = this
 		// 监听到预报时间或 elementtype 变化时手动获取三个海区的状态
 		const areas = [AreaEnum.NORTH, AreaEnum.EAST, AreaEnum.SOUTH]
-		this.seaAreaFlowList = []
-		areas.forEach((area) => {
+		// this.seaAreaFlowList = []
+		let seaAreaFlowList: {
+			code: number
+			name: string
+			sort: number
+			groupList: {
+				code: number
+				name: string
+				state: StateEnum
+				checked: boolean
+				level: number
+				desc: string
+				sort: number
+				children: {
+					code: number
+					name: string
+					state: StateEnum
+					level: number
+
+					checked: boolean
+				}[]
+			}[]
+		}[] = []
+		for (let index = 0; index < areas.length; index++) {
+			// const element = array[index];
+			const area = areas[index]
 			getAreaStep(val.elementType, new Date(), area, val.forecastDt).then(
 				(res: {
 					data: {
 						index: number // 为sort排序的顺序
-						product_type: number
+						product_type: number // 对应 L0-L5级产品
 						group_list: {
 							group_code: number
 							group_name: string
 							pid: number
-							sort: number	// 此sort有问题，暂时不使用
+							sort: number // 此sort有问题，暂时不使用
 							step_state: number
 						}[]
 					}[]
 					status: number
 				}) => {
 					if (res.status === 200) {
-						// console.log(res.data)
+						console.log(res.data)
 						let tempAreaStep: any = {
 							code: 0,
 							name: '',
+							sort: 0,
 							groupList: [],
 						}
 						tempAreaStep['code'] = area
 						tempAreaStep['name'] = getAreaName(area)
+						tempAreaStep['sort'] = index
 
 						res.data.forEach((temp) => {
 							let _tempGroup = {
@@ -231,7 +287,7 @@ export default class ElementFlowView extends Vue {
 										child.step_state == StepStateEnum.SUCCESS
 											? StateEnum.SUITED
 											: StateEnum.UNSUITED
-									_tempGroup['desc'] = child.group_name
+									_tempGroup['desc'] = getGroupDesc(temp.product_type)
 									// _tempGroup['sort'] = child.sort
 									_tempGroup['checked'] =
 										child.step_state == StepStateEnum.SUCCESS ? true : false
@@ -239,16 +295,18 @@ export default class ElementFlowView extends Vue {
 							}
 							tempAreaStep.groupList.push(_tempGroup)
 						})
-						this.seaAreaFlowList.push(tempAreaStep)
+						seaAreaFlowList.push(tempAreaStep)
 					}
 				}
 			)
-		})
+		}
+		this.seaAreaFlowList = seaAreaFlowList
 	}
 
 	seaAreaFlowList: {
 		code: number
 		name: string
+		sort: number
 		groupList: {
 			code: number
 			name: string
@@ -266,103 +324,7 @@ export default class ElementFlowView extends Vue {
 				checked: boolean
 			}[]
 		}[]
-	}[] = [
-		{
-			code: 2,
-			name: '东海海区',
-			groupList: [
-				{
-					code: 1,
-					name: '国家中心',
-					state: StateEnum.SUITED,
-					level: 0,
-					desc: '国家级指导产品',
-					sort: 0,
-					checked: true,
-					children: [],
-				},
-				{
-					code: 2,
-					name: '省台',
-					state: StateEnum.NULL,
-					level: 0,
-					desc: '国家级指导产品',
-					sort: 1,
-					checked: true,
-					children: [
-						{
-							code: 3,
-							name: '江苏省台',
-							state: StateEnum.SUITED,
-							level: 0,
-							checked: true,
-						},
-						{
-							code: 4,
-							name: '上海市台',
-							state: StateEnum.UNSUITED,
-							level: 0,
-							checked: false,
-						},
-						{
-							code: 5,
-							name: '浙江省台',
-							state: StateEnum.SUITED,
-							level: 0,
-							checked: true,
-						},
-						{
-							code: 6,
-							name: '福建省台',
-							state: StateEnum.UNSUITED,
-							level: 0,
-							checked: false,
-						},
-					],
-				},
-				{
-					code: 3,
-					name: '东海区',
-					state: StateEnum.SUITED,
-					level: 0,
-					desc: '国家级指导产品',
-					sort: 2,
-					checked: true,
-					children: [],
-				},
-				{
-					code: 4,
-					name: '东海区',
-					state: StateEnum.SUITED,
-					level: 0,
-					desc: '国家级指导产品',
-					sort: 3,
-					checked: true,
-					children: [],
-				},
-				{
-					code: 4,
-					name: '国家中心',
-					state: StateEnum.SUITED,
-					level: 0,
-					desc: '国家级指导产品',
-					sort: 4,
-					checked: true,
-					children: [],
-				},
-				{
-					code: 4,
-					name: '国家中心',
-					state: StateEnum.UNSUITED,
-					level: 0,
-					sort: 5,
-					checked: false,
-					desc: '国家级指导产品',
-					children: [],
-				},
-			],
-		},
-	]
+	}[] = []
 
 	// seaAreaFlowList: {
 	// 	code: number
@@ -706,7 +668,7 @@ export default class ElementFlowView extends Vue {
 	display: flex !important;
 }
 .flow-row {
-	height: 100%;
+	// height: 100%;
 	width: 15%;
 	background: rgb(40, 30, 95);
 	margin-right: 10px;

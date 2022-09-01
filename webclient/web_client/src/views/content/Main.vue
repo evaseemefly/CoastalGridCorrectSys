@@ -529,8 +529,10 @@ export default class MainView extends Vue {
 	background: linear-gradient(#4b6584, rgb(49, 59, 89));
 	position: absolute;
 	left: 0px;
+	top: 0px;
 	right: 0px;
-	height: 100%;
+	// height: 100%;
+	bottom: 0px;
 	align-items: center;
 	.main-statistics-content {
 		// height: 100%;
@@ -615,7 +617,7 @@ export default class MainView extends Vue {
 	background: #0a3d625e;
 	width: 80%;
 	// height: 100%;
-	margin: 10px;
+	margin: 5px;
 	display: flex;
 	flex-direction: column;
 	border-radius: 10px;

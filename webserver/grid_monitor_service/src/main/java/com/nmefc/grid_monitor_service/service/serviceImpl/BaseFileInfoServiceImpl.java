@@ -297,8 +297,10 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
                 return arg1.getGmt_update().compareTo(arg0.getGmt_update());
             }
         });
-        //截取前五个
-        watchFileInfoList = watchFileInfoList.subList(0,5);
+        if(watchFileInfoList.size()>5){
+            //截取前五个
+            watchFileInfoList = watchFileInfoList.subList(0,5);
+        }
         return watchFileInfoList;
     }
 

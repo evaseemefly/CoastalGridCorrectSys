@@ -687,7 +687,7 @@ export default class ElementFlowView extends Vue {
 	.flow-item-subtitle {
 		flex-grow: 1;
 		font-size: 13px;
-		color: #797777;
+		color: #c3c1a8;
 	}
 	.flow-item-content {
 		flex-grow: 4;
@@ -714,56 +714,44 @@ export default class ElementFlowView extends Vue {
 	}
 }
 
-.mini-font{
+.mini-font {
 	font-size: 15px;
 }
 .suited {
 	flex-grow: 4;
 }
 
-.element-flow-list-container {
-	.flow-row {
-		.flow-item.suited {
-			background: #78db1b;
-		}
-		.flow-item.check-out {
-			background: #f7b731;
-		}
+// .element-flow-list-container {
+// 	.flow-row {
+// 		.flow-item.suited {
+// 			background: #78db1b;
+// 		}
+// 		.flow-item.check-out {
+// 			background: #f7b731;
+// 		}
+// 	}
+// 	.flow-item.suited {
+// 		.flow-item.suited {
+// 			background: #78db1b;
+// 		}
+// 		.flow-item.un-suited {
+// 			background: #457e10b5;
+// 		}
+// 	}
+// 	.flow-item.un-suited {
+// 		background: #457e10b5;
+// 	}
+// }
+.flow-item.suited {
+	background: #78db1b;
+	.flow-item-subtitle {
+		color: #5e4f50;
 	}
-	.flow-item.suited {
-		.flow-item.suited {
-			background: #78db1b;
-		}
-		.flow-item.un-suited {
-			background: #457e10b5;
-		}
-	}
-	.flow-item.un-suited {
-		background: #457e10b5;
-	}
-	// .national-flow {
-	// 	.flow-item.suited {
-	// 		background: #43d4cf;
-	// 	}
-	// 	.flow-item.un-suited {
-	// 		background: #457e10b5;
-	// 	}
-	// }
-	// .province-flow {
-	// 	.flow-item.suited {
-	// 		background: #78db1b;
-	// 	}
-	// 	.flow-item.un-suited {
-	// 		background: #457e10b5;
-	// 	}
-	// }
-	// .region-flow {
-	// 	.flow-item.suited {
-	// 		background: #ffce2d;
-	// 	}
-	// 	.flow-item.un-suited {
-	// 		background: #457e10b5;
-	// 	}
-	// }
+}
+.flow-item.check-out {
+	background: #f7b731;
+}
+.flow-item.un-suited {
+	background: #267445;
 }
 </style>

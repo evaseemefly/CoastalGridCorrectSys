@@ -1,62 +1,32 @@
 <template>
-	<div class="base-info-step-container" :class="[getSuitedCls()]">
-		<div class="base-info-header">{{ name }}</div>
+	<div class="base-info-step-container" :style="{ 'background-color': borderColor }">
+		<div class="base-info-header">{{ headTitle }}</div>
 		<div class="base-info-body">
-			<div class="body-primary-title">{{ desc }}</div>
+			<div class="body-primary-title">{{ primaryTitle }}</div>
 			<div class="body-sub-content">
-				<div class="sub-content-header">
-					{{ getSuitVal() }}
-				</div>
-				<div class="sub-content-footer">{{ formatDt2YMDHm(lastDt) }}</div>
+				<div class="sub-content-header" :style="{ color: titleColor }">{{ subHeader }}</div>
+				<div class="sub-content-footer">{{ subFooter }}</div>
 			</div>
 		</div>
 	</div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import { StateEnum } from '@/enum'
 @Component({})
 export default class BaseInfoStepView extends Vue {
 	@Prop()
-	state: number
+	headTitle: string
+	@Prop()
+	primaryTitle: string
+	@Prop()
+	subHeader: string
+	@Prop()
+	subFooter: string
 
 	@Prop()
-	name: string
+	borderColor: string
 	@Prop()
-	desc: string
-	@Prop()
-	lastDt: Date
-
-	getSuitedCls(): string {
-		const state = this.state
-		let clsName = ''
-		switch (state) {
-			case StateEnum.NULL:
-				clsName = ''
-				break
-			case StateEnum.SUITED:
-				clsName = 'suited'
-				break
-			case StateEnum.UNSUITED:
-				clsName = 'un-suited'
-				break
-		}
-		return clsName
-	}
-
-	getSuitVal(): string {
-		const state = this.state
-		let val = ''
-		val = state === StateEnum.SUITED ? '完成' : '未完成'
-		return val
-	}
-
-	formatDt2YMDHm = (val: Date): string => {
-		const dtStr = `${val.getFullYear()}-${val.getMonth()}-${val.getDate()} ${(
-			'0' + val.getHours()
-		).slice(-2)}:${('0' + val.getMinutes()).slice(-2)}`
-		return dtStr
-	}
+	titleColor: string
 }
 </script>
 <style scoped lang="less">
@@ -119,19 +89,6 @@ export default class BaseInfoStepView extends Vue {
 			}
 		}
 	}
-}
-.suited {
-	background: #78db1b;
-	.base-info-body {
-		.body-sub-content {
-			.sub-content-header {
-				color: white;
-			}
-		}
-	}
-}
-.un-suited {
-	background: #267445;
 }
 #test {
 	color: #075a56;

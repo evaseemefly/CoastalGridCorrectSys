@@ -100,7 +100,8 @@
 			<div class="my-row-title">总体流程及文件监听详情</div>
 			<div class="my-row-content">
 				<div class="my-col-4 horizontal space-between">
-					<BaseInfoStepView
+					<BaseInfoStepsView :forecastDt="currentForecastDt"></BaseInfoStepsView>
+					<!-- <BaseInfoStepView
 						v-for="item in baseStepList"
 						:key="item.key"
 						:headTitle="item.headTitle"
@@ -110,32 +111,8 @@
 						:borderColor="item.borderColor"
 						:titleColor="item.titleColor"
 					>
-					</BaseInfoStepView>
-					<!-- <BaseInfoProgressView
-					primaryTitle="国家中心"
-					subTitle="完成国家级指导产品"
-					progress="100"
-				></BaseInfoProgressView>
-				<BaseInfoProgressView
-					primaryTitle="浙江省台"
-					subTitle="订正后产品"
-					progress="100"
-				></BaseInfoProgressView>
-				<BaseInfoProgressView
-					primaryTitle="东海预报中心"
-					subTitle="完成省订正场融合产品"
-					progress="50"
-				></BaseInfoProgressView>
-				<BaseInfoProgressView
-					primaryTitle="国家中心"
-					subTitle="等待三海区融合产品"
-					progress="0"
-				></BaseInfoProgressView>
-				<BaseInfoProgressView
-					primaryTitle="国家中心"
-					subTitle="等待人机交互订正后产品"
-					progress="0"
-				></BaseInfoProgressView> -->
+					</BaseInfoStepView> -->
+					
 				</div>
 				<div class="my-col-2" style="">
 					<LastModifyFieListView primaryTitle="最近文件"></LastModifyFieListView>
@@ -160,7 +137,9 @@ import ElementProgressView from '@/components/ElementProgressView.vue'
 import ElementTabView from '@/components/ElementTabView.vue'
 import BaseInfoProgressView from '@/components/BaseInfoProgressView.vue'
 import BaseInfoStepView from '@/components/BaseInfoStepView.vue'
+import BaseInfoStepsView from '@/components/BaseInfoStepsView.vue'
 import LastModifyFieListView from '@/components/LastModifyFileListView.vue'
+
 // api
 import {
 	getTaskByGroup,
@@ -193,6 +172,7 @@ interface IInfo {
 		LastModifyFieListView,
 		BaseInfoStepView,
 		ElementTabView,
+		BaseInfoStepsView,
 	},
 })
 export default class MainView extends Vue {
@@ -529,8 +509,10 @@ export default class MainView extends Vue {
 	background: linear-gradient(#4b6584, rgb(49, 59, 89));
 	position: absolute;
 	left: 0px;
+	top: 0px;
 	right: 0px;
-	height: 100%;
+	// height: 100%;
+	bottom: 0px;
 	align-items: center;
 	.main-statistics-content {
 		// height: 100%;
@@ -580,6 +562,7 @@ export default class MainView extends Vue {
 		}
 	}
 }
+
 .horizontal {
 	display: flex;
 	flex-direction: row;
@@ -615,7 +598,7 @@ export default class MainView extends Vue {
 	background: #0a3d625e;
 	width: 80%;
 	// height: 100%;
-	margin: 10px;
+	margin: 5px;
 	display: flex;
 	flex-direction: column;
 	border-radius: 10px;

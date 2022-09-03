@@ -1,12 +1,7 @@
 <template>
 	<div id="ele_progress">
 		<div class="progress-title">今日{{ elementName }}作业进度</div>
-		<el-progress
-			type="circle"
-			:percentage="rate"
-			:status="status"
-			:color="statusColor"
-		></el-progress>
+		<el-progress type="circle" :percentage="rate" :color="colors"></el-progress>
 	</div>
 </template>
 <script lang="ts">
@@ -27,6 +22,14 @@ export default class ElementProgressView extends Vue {
 	forecastDt: Date
 
 	rate = 0
+
+	colors = [
+		{ color: '#f56c6c', percentage: 20 },
+		{ color: '#e6a23c', percentage: 40 },
+		// { color: '#5cb87a', percentage: 60 },
+		{ color: 'rgb(130, 204, 221)', percentage: 80 },
+		{ color: '#78db1b', percentage: 100 },
+	]
 
 	// status = ''
 
@@ -57,7 +60,7 @@ export default class ElementProgressView extends Vue {
 		if (this.rate === 0) {
 			status = 'exception'
 		} else if (this.rate < 50) {
-			status = 'warning'
+			status = ''
 		} else if (this.rate === 100) {
 			status = 'success'
 		}

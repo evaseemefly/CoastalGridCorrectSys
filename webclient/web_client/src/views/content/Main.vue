@@ -35,13 +35,7 @@
 						:primayColor="GroupStatisticalData.primayColor"
 					></StatisticanInfoView>
 				</div>
-				<div class="my-statics-form">
-					<StatisticanInfoView
-						:minorTitle="ProductStatisticalData.mimor"
-						:primayTile="ProductStatisticalData.primay"
-						:primayColor="ProductStatisticalData.primayColor"
-					></StatisticanInfoView>
-				</div>
+
 				<div class="my-statics-form">
 					<StatisticanInfoView
 						:minorTitle="ProductTypeStatisticalData.mimor"
@@ -49,7 +43,13 @@
 						:primayColor="ProductTypeStatisticalData.primayColor"
 					></StatisticanInfoView>
 				</div>
-
+				<div class="my-statics-form">
+					<StatisticanInfoView
+						:minorTitle="FileAllSizeStatisticalData.mimor"
+						:primayTile="FileAllSizeStatisticalData.primay"
+						:primayColor="FileAllSizeStatisticalData.primayColor"
+					></StatisticanInfoView>
+				</div>
 				<!-- <div class="my-histogran">
 				<ProductProgressView></ProductProgressView>
 			</div> -->
@@ -112,7 +112,6 @@
 						:titleColor="item.titleColor"
 					>
 					</BaseInfoStepView> -->
-					
 				</div>
 				<div class="my-col-2" style="">
 					<LastModifyFieListView primaryTitle="最近文件"></LastModifyFieListView>
@@ -227,7 +226,7 @@ export default class MainView extends Vue {
 	// 产品数量
 	ProductStatisticalData: IInfo = {
 		mimor: '产品数量',
-		primay: '5',
+		primay: '0',
 		// primayColor: '#e55039',
 		primayColor: '#78db1b',
 		// primayColor: '#f6b93b',
@@ -245,7 +244,7 @@ export default class MainView extends Vue {
 	// 文件总数
 	FileStatisticalData: IInfo = {
 		mimor: '文件总数',
-		primay: '21',
+		primay: '0',
 		primayColor: '#82ccdd',
 		// primayColor: '#f6b93b',
 	}
@@ -257,6 +256,12 @@ export default class MainView extends Vue {
 		// primayColor: '#78e08f',
 		primayColor: '#82ccdd',
 		// primayColor: '#f6b93b',
+	}
+	FileAllSizeStatisticalData: IInfo = {
+		mimor: '文件总大小',
+		primay: '0',
+		// primayColor: '#78e08f',
+		primayColor: '#78db1b',
 	}
 	baseStepList: {
 		headTitle: string
@@ -457,6 +462,22 @@ export default class MainView extends Vue {
 			}
 		)
 		// 获取产品种类总数
+		getProductMain().then(
+			(res: {
+				status: number
+				data: {
+					forecast_issurer_count: number
+					forecast_product_count: number
+					forecast_product_size: number
+				}
+			}) => {
+				this.FileStatisticalData.primay = res.data.forecast_product_count.toString()
+				this.GroupStatisticalData.primay = res.data.forecast_issurer_count.toString()
+				this.FileAllSizeStatisticalData.primay = `${res.data.forecast_product_size.toFixed(
+					2
+				)}GB`
+			}
+		)
 		// 获取当日文件总数
 		getProductDailyInfo()
 			.then((res: { status: number; data: { file_count: number; files_size: number } }) => {
@@ -478,9 +499,9 @@ export default class MainView extends Vue {
 	convertNow2ForecastDt(val: Date): Date {
 		const now = val
 		const nowHours = now.getHours()
-		let forecastDt: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0)
+		let forecastDt: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0)
 		if (nowHours >= 18) {
-			forecastDt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0)
+			forecastDt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 20, 0)
 		}
 		return forecastDt
 	}

@@ -101,6 +101,18 @@ const getAreaStep = (elemntType: number, nowDt: Date, searArea: number, targetDt
 	})
 }
 
+const getAllAreaStep = (level: number, forecastDt: Date) => {
+	const area = 'task'
+	const url = `${HOST}/${area}/element/allarea/step`
+	return axios.get(url, {
+		// headers: authHeader(),
+		params: {
+			level: level,
+			target_dt: forecastDt ? forecastDt : null,
+		},
+	})
+}
+
 export {
 	getTaskByGroup,
 	getGroupCount,
@@ -111,4 +123,5 @@ export {
 	getLastFileList,
 	getElmentRate,
 	getAreaStep,
+	getAllAreaStep,
 }

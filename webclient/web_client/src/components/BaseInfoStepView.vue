@@ -1,5 +1,5 @@
 <template>
-	<div class="base-info-step-container" :class="[getSuitedCls()]">
+	<div class="base-info-step-container" :class="[getSuitedCls()]" :style="{ order: sort }">
 		<div class="base-info-header">{{ name }}</div>
 		<div class="base-info-body">
 			<div class="body-primary-title">{{ desc }}</div>
@@ -26,6 +26,9 @@ export default class BaseInfoStepView extends Vue {
 	desc: string
 	@Prop()
 	lastDt: Date
+
+	@Prop()
+	sort: number
 
 	getSuitedCls(): string {
 		const state = this.state

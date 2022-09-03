@@ -82,5 +82,12 @@ public interface BaseFileInfoService {
      *@Date: 2022/8/31 13:56
      */
     List<ProductLevelInfoDetail> getProductInfoDetailByElement(Integer type, Date date, Integer areaCode);
-
+    /**
+     *@Description: 根据传入的产品级别，日期，获取该产品级别的状态
+     *@Param: [level, date]
+     *@Return: com.nmefc.grid_monitor_service.bean.resultBean.LevelInfo
+     *@Author: QuYuan
+     *@Date: 2022/9/3 7:55
+     */
+    LevelInfo getLevelInfoByLevel(Integer level, Date date);
 }

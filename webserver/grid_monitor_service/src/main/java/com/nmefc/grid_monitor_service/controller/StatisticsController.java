@@ -51,7 +51,7 @@ public class StatisticsController {
 
 
     @GetMapping("/product/7days")
-    public List<FileInfo> get7daysFileInfo(){
+    public List<FileInfo> getTargetDaysFileInfo(){
         return baseFileInfoService.getFileInfo(new Integer(7));
     }
 }

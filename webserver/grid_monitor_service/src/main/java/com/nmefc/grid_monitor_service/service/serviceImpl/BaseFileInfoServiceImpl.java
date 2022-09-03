@@ -277,7 +277,7 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         SimpleDateFormat sdfutc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         Date date = new Date();
         Date UTCTime = TimeUtil.convertToUTC(date);
-        List<BaseFileInfo> baseFileInfoList = getLast12HourFileInfo(UTCTime);
+        List<BaseFileInfo> baseFileInfoList = getLast24HourFileInfo(UTCTime);
         for(BaseFileInfo item : baseFileInfoList){
             //文件大小转换为MB
             BigDecimal b = new BigDecimal(String.valueOf(item.getSize()));
@@ -306,24 +306,17 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
 
     @Override
     public ElementInfo getElementInfo(Integer type, Date UTCTime) {
-        //1.获取字典表, 后面查询字典不需要再去访问数据库
-        DictBaseExample dictBaseExample = new DictBaseExample();
-        DictBaseExample.Criteria criteriaDictBase = dictBaseExample.createCriteria();
-        criteriaDictBase.andCodeEqualTo(type);
+
         ElementInfo elementInfo;
         //1.获取全部要素的集合
-        List<DictBase> dictBaseList = dictBaseMapper.selectByExample(dictBaseExample);
-        if(null == dictBaseList && dictBaseList.size() < 1){
-            return null;
-        }
+        List<DictBase> dictBaseList = getDict(type);
         //2.将要素集合封装进返回对象
         DictBase dictBase = dictBaseList.get(0);
         elementInfo =  new ElementInfo(dictBase.getCode(),dictBase.getRemarks());
 
         //3.查询各个要素的当前完成情况
-        //3.1 获取近12H当前要素的文件，去重
 
-        List<BaseFileInfo> baseFileInfoList = getLast12HourFileInfoByElement(UTCTime, type);
+        List<BaseFileInfo> baseFileInfoList = getFileInfoByElement(UTCTime, type);
         //4 获取当前要素的总数
         Integer sum;
             //TODO:[-] 这里暂时写死了
@@ -352,8 +345,8 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         //2.根据传入的海区Code，初始化Group结构
         productLevelInfoDetailList = initGroupConstructor(areaCode,productLevelCollection);
 
-        //3.根据当前要素获取最近12H的产品信息,并按照产品级别拆分
-        List<BaseFileInfo> baseFileInfoList = getLast12HourFileInfoByElement(UTCTime, type);
+        //3.根据当前要素获取指定时间的产品信息,并按照产品级别拆分
+        List<BaseFileInfo> baseFileInfoList = getFileInfoByElement(UTCTime, type);
         if(null == baseFileInfoList && baseFileInfoList.size() <1){return productLevelInfoDetailList;}
         Map<Integer, List<BaseFileInfo>> groupByLevelList = baseFileInfoList.stream().collect(Collectors.groupingBy(BaseFileInfo::getLevel));
 
@@ -375,6 +368,26 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         }
 
         return productLevelInfoDetailList;
+    }
+
+    @Override
+    public LevelInfo getLevelInfoByLevel(Integer level, Date date) {
+        //1.获取全部要素的集合
+        List<DictBase> dictBaseList = getDict(level);
+        if(null == dictBaseList || dictBaseList.size() != 1){return null;}
+        DictBase dictBase = dictBaseList.get(0);
+        //2.封装进结果集合
+        LevelInfo levelInfo = new LevelInfo(dictBase.getCode(),Integer.parseInt(dictBase.getVal()));
+        List<BaseFileInfo> baseFileInfoList = getFileInfoByLevel(date,level);
+        if(null == baseFileInfoList){return null;}
+        int sum = baseFileInfoList.size();
+        int code = ProductSum.getLevelSumMap().get(level);
+
+        //判断要求的文件数量是否与传入的文件数量相同
+        if(ProductSum.getLevelSumMap().get(level).equals(sum)){
+            levelInfo.setStep_state(Integer.parseInt(ProcessEnum.SUCCESS.getValue()));
+        }
+        return levelInfo;
     }
 
     /**
@@ -505,19 +518,19 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
 
     }
     /**
-     *@Description:获取最近12个小时的文件信息，并去重
+     *@Description:获取最近24个小时的文件信息，并去重
      *@Param: []
      *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.BaseFileInfo>
      *@Author: QuYuan
      *@Date: 2022/8/31 9:26
      */
-    private List<BaseFileInfo> getLast12HourFileInfo(Date targetDate){
+    private List<BaseFileInfo> getLast24HourFileInfo(Date targetDate){
 
         //1.转换为UTC时间
 
 //        Date UTCnow = TimeUtil.convertToUTC(date);
         //2. 获取当前UTC时间前一天的时间作为起始时间
-        Date startDate = TimeUtil.getLast12HourTime(targetDate);
+        Date startDate = TimeUtil.getLast24HourTime(targetDate);
         BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
         BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
 //        System.out.println(startDate);
@@ -538,29 +551,29 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
         return baseFileInfoList;
     }
     /**
-     *@Description:根据要素获取最近12个小时的文件信息，并去重
+     *@Description:根据要素获取获取传入的时间对应的预报时间文件信息，并去重
      *@Param: [targetDate]
      *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.BaseFileInfo>
      *@Author: QuYuan
      *@Date: 2022/8/31 14:04
      */
     //TODO:[-]后续和上一个方法合并
-    private List<BaseFileInfo> getLast12HourFileInfoByElement(Date targetDate,Integer type){
+    private List<BaseFileInfo> getFileInfoByElement(Date targetDate,Integer type){
         //1.转换为UTC时间
 
 //        Date UTCnow = TimeUtil.convertToUTC(date);
         //2. 获取当前UTC时间前一天的时间作为起始时间
-        Date startDate = TimeUtil.getLast12HourTime(targetDate);
+//        Date startDate = TimeUtil.getLast12HourTime(targetDate);
         BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
         BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
 //        System.out.println(startDate);
 //        System.out.println(UTCnow);
         //降序
-        baseFileInfoExample.setOrderByClause("update_time desc");
+        baseFileInfoExample.setOrderByClause("forecast_time desc");
         List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
 
-        //时间在传入时间前24小时的数据
-        criteria.andUpdateTimeBetween(startDate,targetDate).andForecastElementEqualTo(type);
+        //获取数据
+        criteria.andForecastTimeEqualTo(targetDate).andForecastElementEqualTo(type);
         //3.查询符合要求的结果，并封装返回对象
         baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
         //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
@@ -570,5 +583,53 @@ public class BaseFileInfoServiceImpl implements BaseFileInfoService {
                         ArrayList::new));
         return baseFileInfoList;
     }
+    /**
+     *@Description: 根据产品级别获取传入的时间对应的预报时间的产品状态
+     *@Param: [targetDate, type]
+     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.BaseFileInfo>
+     *@Author: QuYuan
+     *@Date: 2022/9/3 8:05
+     */
+    private List<BaseFileInfo> getFileInfoByLevel(Date targetDate,Integer level){
+        //1.转换为UTC时间
+
+//        Date UTCnow = TimeUtil.convertToUTC(date);
+        //2. 获取当前UTC时间前一天的时间作为起始时间
+//        Date startDate = TimeUtil.getLast12HourTime(targetDate);
+        BaseFileInfoExample baseFileInfoExample = new BaseFileInfoExample();
+        BaseFileInfoExample.Criteria criteria =  baseFileInfoExample.createCriteria();
+//        System.out.println(startDate);
+//        System.out.println(UTCnow);
+        //降序
+        baseFileInfoExample.setOrderByClause("forecast_time desc");
+        List<BaseFileInfo> baseFileInfoList = new ArrayList<>();
+
+        //获取数据
+        criteria.andForecastTimeEqualTo(targetDate).andLevelEqualTo(level);
+        //3.查询符合要求的结果，并封装返回对象
+        baseFileInfoList = baseFileInfoMapper.selectByExample(baseFileInfoExample);
+        //去掉文件名重复的：因为用户多次上传同一文件，记录每上传1次会增加1条，这里需要去重（去掉文件名同名记录）
+        baseFileInfoList = baseFileInfoList.stream().collect(Collectors
+                .collectingAndThen(
+                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BaseFileInfo::getFileFullName))),
+                        ArrayList::new));
+        return baseFileInfoList;
+    }
+    private List<DictBase> getDict(Integer key){
+        //1.获取字典表, 后面查询字典不需要再去访问数据库
+        DictBaseExample dictBaseExample = new DictBaseExample();
+        DictBaseExample.Criteria criteriaDictBase = dictBaseExample.createCriteria();
+        criteriaDictBase.andCodeEqualTo(key);
+        ElementInfo elementInfo;
+        //2.获取全部要素的集合
+        List<DictBase> dictBaseList = dictBaseMapper.selectByExample(dictBaseExample);
+        if(null == dictBaseList && dictBaseList.size() < 1){
+            return null;
+        }else {
+            return dictBaseList;
+        }
+
+    }
+
 
 }

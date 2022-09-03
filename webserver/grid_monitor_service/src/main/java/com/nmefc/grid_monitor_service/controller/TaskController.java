@@ -1,9 +1,6 @@
 package com.nmefc.grid_monitor_service.controller;
 
-import com.nmefc.grid_monitor_service.bean.resultBean.ElementInfo;
-import com.nmefc.grid_monitor_service.bean.resultBean.GroupInfo;
-import com.nmefc.grid_monitor_service.bean.resultBean.ProcessInfo;
-import com.nmefc.grid_monitor_service.bean.resultBean.ProductLevelInfoDetail;
+import com.nmefc.grid_monitor_service.bean.resultBean.*;
 import com.nmefc.grid_monitor_service.common.TimeEnum;
 import com.nmefc.grid_monitor_service.service.BaseFileInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,5 +131,26 @@ public class TaskController {
             e.printStackTrace();
         }
         return baseFileInfoService.getProductInfoDetailByElement(elementType,date, area);
+    }
+/**
+ *@Description: 根据产品级别，获取该产品级别在指定时间内的预报产品状况
+ *@Param: [level, target_dt]
+ *@Return: com.nmefc.grid_monitor_service.bean.resultBean.LevelInfo
+ *@Author: QuYuan
+ *@Date: 2022/9/3 8:31
+ */
+    @GetMapping("/element/allarea/step")
+    public LevelInfo stepAll(Integer level, String target_dt){
+        if(null == level && null == target_dt ){return null;}
+
+        SimpleDateFormat fmt1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Date date = null;
+        try {
+            date = fmt1.parse(target_dt);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return baseFileInfoService.getLevelInfoByLevel(level,date);
     }
 }

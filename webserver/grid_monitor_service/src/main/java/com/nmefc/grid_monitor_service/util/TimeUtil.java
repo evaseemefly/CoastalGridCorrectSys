@@ -135,6 +135,14 @@ public class TimeUtil {
         return calendar.getTime();
     }
 
+    public static Date getLast24HourTime(Date dateUTC){
+        //1. 获取当前UTC时间前一天的时间作为起始时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateUTC);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
+        return calendar.getTime();
+    }
+
     private TimeUtil() {
     }
 }

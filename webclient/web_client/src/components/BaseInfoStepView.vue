@@ -14,7 +14,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import { StateEnum } from '@/enum'
+import { StateEnum, StepStateEnum } from '@/enum'
 @Component({})
 export default class BaseInfoStepView extends Vue {
 	@Prop()
@@ -34,13 +34,13 @@ export default class BaseInfoStepView extends Vue {
 		const state = this.state
 		let clsName = ''
 		switch (state) {
-			case StateEnum.NULL:
+			case StepStateEnum.WAIT:
 				clsName = ''
 				break
-			case StateEnum.SUITED:
+			case StepStateEnum.SUCCESS:
 				clsName = 'suited'
 				break
-			case StateEnum.UNSUITED:
+			case StepStateEnum.FAIL:
 				clsName = 'un-suited'
 				break
 		}
@@ -50,12 +50,12 @@ export default class BaseInfoStepView extends Vue {
 	getSuitVal(): string {
 		const state = this.state
 		let val = ''
-		val = state === StateEnum.SUITED ? '完成' : '未完成'
+		val = state === StepStateEnum.SUCCESS ? '完成' : '未完成'
 		return val
 	}
 
 	formatDt2YMDHm = (val: Date): string => {
-		const dtStr = `${val.getFullYear()}-${val.getMonth()}-${val.getDate()} ${(
+		const dtStr = `${val.getFullYear()}-${val.getMonth() + 1}-${val.getDate()} ${(
 			'0' + val.getHours()
 		).slice(-2)}:${('0' + val.getMinutes()).slice(-2)}`
 		return dtStr

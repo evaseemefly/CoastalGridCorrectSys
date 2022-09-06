@@ -208,7 +208,7 @@ export default class MainView extends Vue {
 
 	selectedElementCode: ElementTypeEnum = ElementTypeEnum.SSW
 
-	selectedElementName = '未选择'
+	selectedElementName = '海面风'
 
 	nowDt: Date = new Date()
 

@@ -105,7 +105,7 @@ const getGroupDesc = (level: ProductLevelEnmu): string => {
 			name = ''
 			break
 		case ProductLevelEnmu.L2:
-			name = '订正融合产品'
+			name = '融合产品'
 			break
 		case ProductLevelEnmu.L3:
 			name = '人机订正产品'
@@ -252,7 +252,9 @@ export default class ElementFlowView extends Vue {
 								children: [],
 							}
 							_tempGroup['code'] = temp.product_type
-							_tempGroup['name'] = getGroupName(temp.product_type)
+
+							// _tempGroup['name'] = getGroupName(temp.product_type)
+
 							_tempGroup['sort'] = temp.index
 
 							if (temp.product_type === ProductLevelEnmu.L1) {
@@ -291,6 +293,7 @@ export default class ElementFlowView extends Vue {
 									// _tempGroup['sort'] = child.sort
 									_tempGroup['checked'] =
 										child.step_state == StepStateEnum.SUCCESS ? true : false
+									_tempGroup['name'] = child.group_name
 								}
 							}
 							tempAreaStep.groupList.push(_tempGroup)
@@ -655,6 +658,8 @@ export default class ElementFlowView extends Vue {
 		// background: rgba(157, 231, 67, 0.772);
 		margin: 5px;
 		.flow-item-title {
+			color: white;
+			text-shadow: 2px 2px 3px #212020;
 		}
 		.flow-item-content {
 			.item-state {

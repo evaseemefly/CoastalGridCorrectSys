@@ -4,7 +4,7 @@
 
 		<ul>
 			<li v-for="item in fileList" :key="item.key">
-				{{ formatDt2DHM(item.updatedDt) }} {{ item.fileName }} 
+				{{ formatDt2DHM(item.updatedDt) }} {{ item.fileName }}
 			</li>
 		</ul>
 	</div>
@@ -43,7 +43,7 @@ export default class LastModifyFieListView extends Vue {
 
 	formatDt2DHM = (val: Date): string => {
 		let formatStr = ''
-		formatStr = `${val.getDate()} ${('0' + val.getHours()).slice(-2)}:${(
+		formatStr = `${val.getMonth() + 1}-${val.getDate()} ${('0' + val.getHours()).slice(-2)}:${(
 			'0' + val.getMinutes()
 		).slice(-2)}`
 		return formatStr

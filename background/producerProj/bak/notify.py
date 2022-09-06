@@ -33,7 +33,7 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 # 监控多个事件
-multi_event = (pyinotify.IN_CLOSE_WRITE | pyinotify.IN_MOVE_SELF | pyinotify.IN_MOVED_TO | pyinotify.IN_MOVED_FROM)
+multi_event = pyinotify.IN_CLOSE_WRITE
 wm = pyinotify.WatchManager()  # 创建WatchManager对象
 
 
@@ -57,7 +57,6 @@ def event_to_store(full_name: str, event_type: str):
     """
     logger.info(f'file {event_type} :{full_name} ')
     # TODO:[-] 22-08-11 注意此处获取时间戳使用 arrow 获取
-
     file_data = {
         'full_path': f'{full_name}',
         # 'gmt_created': datetime.datetime.utcnow().timestamp(),
@@ -88,35 +87,9 @@ class MyEventHandler(pyinotify.ProcessEvent):  # 定制化事件处理类，注�
     def process_IN_CLOSE_WRITE(self, event):
         # 结束写入时执行之前 watchdog 中的相关操作
         pathname: str = event.pathname
-        # TODO:[-] 22-09-05 注意此处需要加入判断，若存在.tmp后缀则不进行写入,处理 .tmp 后缀在 IN_MOVED_TO 事件中处理
-        index_tmp: int = pathlib.Path(pathname).name.find('.tmp')
-        # 文件名中是否包含 tmp
-        is_include_tmp: bool = True if index_tmp >= 0 else False
-        # 判断是否为文件 且 不能包含 tmp 则 store
-        if is_file(pathname) and not (is_include_tmp):
+
+        if is_file(pathname):
             logger.info("wathing in CLOSE_WRITE:{0}".format(pathname))
-            event_to_store(pathname, 'modified')
-
-    def process_IN_MOVE_SELF(self, event):
-        # 结束写入时执行之前 watchdog 中的相关操作
-        pathname: str = event.pathname
-
-        if is_file(pathname):
-            logger.info("wathing in IN_MOVE_SELF:{0}".format(pathname))
-
-    def process_IN_MOVED_FROM(self, event):
-        # 结束写入时执行之前 watchdog 中的相关操作
-        pathname: str = event.pathname
-
-        if is_file(pathname):
-            logger.info("wathing in IN_MOVED_FROM:{0}".format(pathname))
-
-    def process_IN_MOVED_TO(self, event):
-        # 结束写入时执行之前 watchdog 中的相关操作
-        pathname: str = event.pathname
-        # 监听道德重命名操作是不包含 .tmp 的文件
-        if is_file(pathname):
-            logger.info("wathing in IN_MOVED_TO:{0}".format(pathname))
             event_to_store(pathname, 'modified')
 
 

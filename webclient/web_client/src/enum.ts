@@ -1,6 +1,7 @@
 export enum GroupEnum {
 	NMF = 1001,
-	PZJ = 1002,
+	PZJ = 1013,
+	REF = 1003
 }
 
 export enum StepStateEnum {

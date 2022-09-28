@@ -1,8 +1,6 @@
 package com.nmefc.grid_monitor_service.controller;
 
-import com.nmefc.grid_monitor_service.bean.resultBean.ElementInfo;
-import com.nmefc.grid_monitor_service.bean.resultBean.GroupInfo;
-import com.nmefc.grid_monitor_service.bean.resultBean.ProcessInfo;
+import com.nmefc.grid_monitor_service.bean.resultBean.*;
 import com.nmefc.grid_monitor_service.common.TimeEnum;
 import com.nmefc.grid_monitor_service.service.BaseFileInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,5 +106,51 @@ public class TaskController {
 
         return baseFileInfoService.getElementInfo(element_type,date);
 
+    }
+    /**
+     *@Description:获取指定海区，指定要素的当前作业状态
+     *@Param: [elementType, now_dt, area, target_dt]
+     *@Return: java.util.List<com.nmefc.grid_monitor_service.bean.resultBean.ProductLevelInfoDetail>
+     *@Author: QuYuan
+     *@Date: 2022/8/31 20:55
+     */
+    @GetMapping("/element/area/step")
+    public List<ProductLevelInfoDetail> step(Integer elementType, String now_dt, Integer area,@Nullable String target_dt){
+        if(null == elementType && null == now_dt && null == area){return null;}
+
+        SimpleDateFormat fmt1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Date date = null;
+        try {
+            if (null != target_dt){
+                date = fmt1.parse(target_dt);
+            }else {
+                date = fmt1.parse(now_dt);
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return baseFileInfoService.getProductInfoDetailByElement(elementType,date, area);
+    }
+/**
+ *@Description: 根据产品级别，获取该产品级别在指定时间内的预报产品状况
+ *@Param: [level, target_dt]
+ *@Return: com.nmefc.grid_monitor_service.bean.resultBean.LevelInfo
+ *@Author: QuYuan
+ *@Date: 2022/9/3 8:31
+ */
+    @GetMapping("/element/allarea/step")
+    public LevelInfo stepAll(Integer level, String target_dt){
+        if(null == level && null == target_dt ){return null;}
+
+        SimpleDateFormat fmt1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Date date = null;
+        try {
+            date = fmt1.parse(target_dt);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return baseFileInfoService.getLevelInfoByLevel(level,date);
     }
 }

@@ -19,6 +19,20 @@ export default class RecentlyHistogranView extends Vue {
 		return [...this.nearlyStatisticsList]
 	}
 
+	sortDt(desc = false): { count: number; size: number; typeCount: number; dt: Date }[] {
+		let sourceDtList: { count: number; size: number; typeCount: number; dt: Date }[] =
+			this.get7DaysStatisticsList
+		let sortedDtList: { count: number; size: number; typeCount: number; dt: Date }[] =
+			sourceDtList.sort((a, b) => {
+				if (desc) {
+					return b.dt - a.dt
+				} else {
+					return a.dt - b.dt
+				}
+			})
+		return sortedDtList
+	}
+
 	@Watch('get7DaysStatisticsList')
 	on7DaysStatisticsList(
 		val: { count: number; size: number; typeCount: number; dt: Date }[]
@@ -33,12 +47,15 @@ export default class RecentlyHistogranView extends Vue {
 		this.dtList = []
 		this.dtStrList = []
 		this.fileCountList = []
-		that.nearlyStatisticsList.forEach((temp) => {
+		const nearlyStatisticsList = this.sortDt(false)
+
+		nearlyStatisticsList.forEach((temp) => {
 			const dtStr = fortmatDate2YMD(temp.dt)
 			// that.dtList.push(temp.dt)
 			that.dtStrList.push(dtStr)
 			that.fileCountList.push(temp.count)
 		})
+
 		if (dom !== null) {
 			// 基于准备好的dom，初始化echarts实例
 			var myChart = echarts.init(dom)

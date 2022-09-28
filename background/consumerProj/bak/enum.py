@@ -7,7 +7,7 @@ class IssureEnum(Enum):
          发布单位枚举——固定
     """
     NMF = 1001
-    PZJ = 1013
+    PZJ = 1002
     REF = 1003
 
 

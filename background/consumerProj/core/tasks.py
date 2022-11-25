@@ -79,7 +79,9 @@ class FileBase:
         dicts = {
             'NMF': IssureEnum.NMF,
             'PZJ': IssureEnum.PZJ,
-            'REF': IssureEnum.REF
+            'REF': IssureEnum.REF,
+            'RNF': IssureEnum.RNF,
+            'PLN': IssureEnum.PLN
         }
         return dicts.get(val, None)
 
@@ -117,7 +119,9 @@ class FileBase:
         dicts = {
             'CSDT': ForecastAreaEnum.CSDT,
             'ZJS': ForecastAreaEnum.ZJS,
-            'DHDT': ForecastAreaEnum.DHDT
+            'DHDT': ForecastAreaEnum.DHDT,
+            'LNS': ForecastAreaEnum.LNS,
+            'BHDT': ForecastAreaEnum.BHDT
         }
         return dicts.get(val, None)
 

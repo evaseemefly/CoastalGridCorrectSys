@@ -1,7 +1,9 @@
 export enum GroupEnum {
 	NMF = 1001,
 	PZJ = 1013,
-	REF = 1003
+	REF = 1003,
+	RNF = 1002,  // 新加入的北海区台
+    PLN = 1005  // 辽宁省台
 }
 
 export enum StepStateEnum {

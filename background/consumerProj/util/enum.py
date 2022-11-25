@@ -9,6 +9,8 @@ class IssureEnum(Enum):
     NMF = 1001
     PZJ = 1013
     REF = 1003
+    RNF = 1002  # 新加入的北海区台
+    PLN = 1005  # 辽宁省台
 
 
 @unique
@@ -34,8 +36,10 @@ class ForecastAreaEnum(Enum):
     """
     CSDT = 4001
     # TODO:[-] 22-08-24 新添加的区域
-    ZJS = 4002   # 浙江省预报区域
+    ZJS = 4002  # 浙江省预报区域
     DHDT = 4003  # 东海预报区域
+    BHDT = 4004  # 北海预报区域
+    LNS = 4005  # 辽宁预报区域
     NULL = 9999
 
 

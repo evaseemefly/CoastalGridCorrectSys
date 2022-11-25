@@ -7,7 +7,10 @@ WATCH_SETTINGS = {
         'WATCH_ROOT_DIR': r'/opt/grid/data/MarineFCST',  # 监听根目录
         'WATCH_DIRS': [r'/opt/grid/data/MarineFCST/NMF/china_seas/whole',
                        r'/opt/grid/data/MarineFCST/PZJ/china_seas/ZJS/PZJ_BEN_DT_CS_grid',
-                       r'/opt/grid/data/MarineFCST/REF/china_seas/DHDT/REF_BEN_DT_CS_grid']
+                       r'/opt/grid/data/MarineFCST/REF/china_seas/DHDT/REF_BEN_DT_CS_grid',
+                       r'/opt/grid/data/MarineFCST/PLN/china_seas/LNS/PLN_BEN_DT_CS_grid',
+                       r'/opt/grid/data/MarineFCST/RNF/china_seas/BHDT/RNF_BEN_DT_CS_grid',
+                       ]
     }
 }
 

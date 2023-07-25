@@ -81,7 +81,24 @@ class FileBase:
             'PZJ': IssureEnum.PZJ,
             'REF': IssureEnum.REF,
             'RNF': IssureEnum.RNF,
-            'PLN': IssureEnum.PLN
+            'PLN': IssureEnum.PLN,
+            'PFJ': IssureEnum.PFJ,
+            'PGX': IssureEnum.PGX,
+            'PSZ': IssureEnum.PSZ,
+            'RSF': IssureEnum.RSF,
+            # 23-07-24
+            'PNB': IssureEnum.PNB,  # 宁波
+            'PHB': IssureEnum.PHB,  # 河北
+            'PDL': IssureEnum.PDL,  # 大连
+            'PTJ': IssureEnum.PTJ,  # 天津
+            'PSD': IssureEnum.PSD,  # 山东
+            'PQD': IssureEnum.PQD,  # 青岛
+            'PJS': IssureEnum.PJS,  # 江苏
+            'PSH': IssureEnum.PSH,  # 上海
+            'PXM': IssureEnum.PXM,  # 厦门
+            'PGD': IssureEnum.PGD,  # 广东
+            'PHN': IssureEnum.PHN,  # 海南
+
         }
         return dicts.get(val, None)
 
@@ -121,7 +138,23 @@ class FileBase:
             'ZJS': ForecastAreaEnum.ZJS,
             'DHDT': ForecastAreaEnum.DHDT,
             'LNS': ForecastAreaEnum.LNS,
-            'BHDT': ForecastAreaEnum.BHDT
+            'BHDT': ForecastAreaEnum.BHDT,
+            'FJS': ForecastAreaEnum.FJS,
+            'GXS': ForecastAreaEnum.GXS,
+            'GDSZS': ForecastAreaEnum.GDSZS,
+            'NHDT': ForecastAreaEnum.NHDT,
+            # 23-07-24
+            'ZJNBS': ForecastAreaEnum.ZJNBS,  # 宁波
+            'HBS': ForecastAreaEnum.HBS,  # 河北
+            'LNDLS': ForecastAreaEnum.LNDLS,  # 大连
+            'TJS': ForecastAreaEnum.TJS,  # 天津
+            'SDS': ForecastAreaEnum.SDS,  # 山东
+            'SDQDS': ForecastAreaEnum.SDQDS,  # 青岛
+            'JSS': ForecastAreaEnum.JSS,  # 江苏
+            'SHS': ForecastAreaEnum.SHS,  # 上海
+            'FJXMS': ForecastAreaEnum.FJXMS,  # 厦门
+            'GDS': ForecastAreaEnum.GDS,  # 广东
+            'HNS': ForecastAreaEnum.HNS  # 海南
         }
         return dicts.get(val, None)
 
